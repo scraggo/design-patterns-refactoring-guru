@@ -9,13 +9,13 @@ interface PatternExport {
 
 export const handlePattern = (pattern: Pattern) => {
   const { name, main } = pattern;
-  console.log(name);
+  console.log(`### ${name} Pattern\n`);
   main();
-  console.log('------');
+  console.log('\n---\n');
 };
 
 export const handlePatterns = (type: string, patterns: PatternExport) => {
-  console.log(`RUNNING ${type.toUpperCase()} PATTERNS\n******`);
+  console.log(`## ${type.toUpperCase()} PATTERNS\n`);
   Object.values(patterns).forEach(pattern => {
     handlePattern(pattern);
   });

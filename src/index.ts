@@ -3,6 +3,7 @@ import { Command, flags } from '@oclif/command';
 import { handlePatterns } from './utils';
 
 import * as creational from './creational';
+import * as structural from './structural';
 
 class Designpatterns1 extends Command {
   static description = 'describe the command here';
@@ -28,7 +29,9 @@ class Designpatterns1 extends Command {
       this.log(`you input --force and --file: ${args.file}`);
     }
 
+    this.log('# Design Patterns - refactoring.guru\n');
     handlePatterns('creational', creational);
+    handlePatterns('structural', structural);
   }
 }
 
