@@ -1,0 +1,10 @@
+// export * as chainOfResponsibility from './chain-of-responsibility';
+export * as command from './command';
+export * as iterator from './iterator';
+// export * as mediator from './mediator';
+// export * as memento from './memento';
+// export * as observer from './observer';
+// export * as state from './state';
+// export * as strategy from './strategy';
+// export * as templateMethod from './template-method';
+// export * as visitor from './visitor';
