@@ -1,7 +1,11 @@
+const INITIAL_STATE = 0;
+
 /**
  * The Subject interface declares a set of methods for managing subscribers.
  */
 interface Subject {
+  state: number;
+
   // Attach an observer to the subject.
   attach(observer: Observer): void;
 
@@ -21,7 +25,7 @@ class ConcreteSubject implements Subject {
    * @type {number} For the sake of simplicity, the Subject's state, essential
    * to all subscribers, is stored in this variable.
    */
-  public state: number;
+  public state: number = INITIAL_STATE;
 
   /**
    * @type {Observer[]} List of subscribers. In real life, the list of
@@ -30,7 +34,7 @@ class ConcreteSubject implements Subject {
    */
   private observers: Observer[] = [];
 
-  /**
+  /*
    * The subscription management methods.
    */
   public attach(observer: Observer): void {
@@ -106,21 +110,24 @@ class ConcreteObserverB implements Observer {
   }
 }
 
-/**
-* The client code.
-*/
+export function main() {
+  /**
+  * The client code.
+  */
+  const subject = new ConcreteSubject();
 
-const subject = new ConcreteSubject();
+  const observer1 = new ConcreteObserverA();
+  subject.attach(observer1);
 
-const observer1 = new ConcreteObserverA();
-subject.attach(observer1);
+  const observer2 = new ConcreteObserverB();
+  subject.attach(observer2);
 
-const observer2 = new ConcreteObserverB();
-subject.attach(observer2);
+  subject.someBusinessLogic();
+  subject.someBusinessLogic();
 
-subject.someBusinessLogic();
-subject.someBusinessLogic();
+  subject.detach(observer2);
 
-subject.detach(observer2);
+  subject.someBusinessLogic();
+}
 
-subject.someBusinessLogic();
+export const name = 'Observer';

@@ -47,9 +47,13 @@ abstract class AbstractClass {
    * provide additional extension points in some crucial places of the
    * algorithm.
    */
-  protected hook1(): void { }
+  protected hook1(): void {
+    // empty
+  }
 
-  protected hook2(): void { }
+  protected hook2(): void {
+    // empty
+  }
 }
 
 /**
@@ -83,7 +87,7 @@ class ConcreteClass2 extends AbstractClass {
   }
 }
 
-/**
+/*
 * The client code calls the template method to execute the algorithm. Client
 * code does not have to know the concrete class of an object it works with, as
 * long as it works with objects through the interface of their base class.
@@ -94,9 +98,13 @@ function clientCode(abstractClass: AbstractClass) {
   // ...
 }
 
-console.log('Same client code can work with different subclasses:');
-clientCode(new ConcreteClass1());
-console.log('');
+export function main() {
+  console.log('Same client code can work with different subclasses:');
+  clientCode(new ConcreteClass1());
+  console.log('');
 
-console.log('Same client code can work with different subclasses:');
-clientCode(new ConcreteClass2());
+  console.log('Same client code can work with different subclasses:');
+  clientCode(new ConcreteClass2());
+}
+
+export const name = 'Template Method';

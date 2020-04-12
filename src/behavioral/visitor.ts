@@ -11,7 +11,7 @@ interface Component {
 * it calls the visitor's method corresponding to the component's class.
 */
 class ConcreteComponentA implements Component {
-  /**
+  /*
    * Note that we're calling `visitConcreteComponentA`, which matches the
    * current class name. This way we let the visitor know the class of the
    * component it works with.
@@ -20,7 +20,7 @@ class ConcreteComponentA implements Component {
     visitor.visitConcreteComponentA(this);
   }
 
-  /**
+  /*
    * Concrete Components may have special methods that don't exist in their
    * base class or interface. The Visitor is still able to use these methods
    * since it's aware of the component's concrete class.
@@ -31,7 +31,7 @@ class ConcreteComponentA implements Component {
 }
 
 class ConcreteComponentB implements Component {
-  /**
+  /*
    * Same here: visitConcreteComponentB => ConcreteComponentB
    */
   public accept(visitor: Visitor): void {
@@ -83,11 +83,11 @@ class ConcreteVisitor2 implements Visitor {
   }
 }
 
-/**
-* The client code can run visitor operations over any set of elements without
-* figuring out their concrete classes. The accept operation directs a call to
-* the appropriate operation in the visitor object.
-*/
+/*
+ * The client code can run visitor operations over any set of elements without
+ * figuring out their concrete classes. The accept operation directs a call to
+ * the appropriate operation in the visitor object.
+ */
 function clientCode(components: Component[], visitor: Visitor) {
   // ...
   for (const component of components) {

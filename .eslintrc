@@ -4,6 +4,7 @@
     "lines-between-class-members": 0,
     "no-console": "warn",
     "object-curly-spacing": ["error", "always"],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "unicorn/no-abusive-eslint-disable": 0
   }
 }

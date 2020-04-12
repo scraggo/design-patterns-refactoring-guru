@@ -7,17 +7,18 @@ class Context {
   /**
    * @type {State} A reference to the current state of the Context.
    */
-  private state: State;
+  private state!: State;
 
   constructor(state: State) {
     this.transitionTo(state);
   }
 
-  /**
+  /*
    * The Context allows changing the State object at runtime.
    */
   public transitionTo(state: State): void {
-    console.log(`Context: Transition to ${(<any>state).constructor.name}.`);
+    // console.log(`Context: Transition to ${(<any>state).constructor.name}.`);
+    console.log(`Context: Transition to ${(state).constructor.name}.`);
     this.state = state;
     this.state.setContext(this);
   }
@@ -41,7 +42,7 @@ class Context {
 * Context to another State.
 */
 abstract class State {
-  protected context: Context;
+  protected context!: Context;
 
   public setContext(context: Context) {
     this.context = context;
@@ -60,6 +61,7 @@ class ConcreteStateA extends State {
   public handle1(): void {
     console.log('ConcreteStateA handles request1.');
     console.log('ConcreteStateA wants to change the state of the context.');
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     this.context.transitionTo(new ConcreteStateB());
   }
 
@@ -80,9 +82,13 @@ class ConcreteStateB extends State {
   }
 }
 
-/**
-* The client code.
-*/
-const context = new Context(new ConcreteStateA());
-context.request1();
-context.request2();
+export function main() {
+  /**
+   * The client code.
+   */
+  const context = new Context(new ConcreteStateA());
+  context.request1();
+  context.request2();
+}
+
+export const name = 'State';

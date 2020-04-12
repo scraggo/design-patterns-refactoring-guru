@@ -9,7 +9,7 @@ class Context {
    */
   private strategy: Strategy;
 
-  /**
+  /*
    * Usually, the Context accepts a strategy through the constructor, but also
    * provides a setter to change it at runtime.
    */
@@ -17,7 +17,7 @@ class Context {
     this.strategy = strategy;
   }
 
-  /**
+  /*
    * Usually, the Context allows replacing a Strategy object at runtime.
    */
   public setStrategy(strategy: Strategy) {
@@ -66,17 +66,21 @@ class ConcreteStrategyB implements Strategy {
   }
 }
 
-/**
-* The client code picks a concrete strategy and passes it to the context. The
-* client should be aware of the differences between strategies in order to make
-* the right choice.
-*/
-const context = new Context(new ConcreteStrategyA());
-console.log('Client: Strategy is set to normal sorting.');
-context.doSomeBusinessLogic();
+export function main() {
+  /**
+  * The client code picks a concrete strategy and passes it to the context. The
+  * client should be aware of the differences between strategies in order to make
+  * the right choice.
+  */
+  const context = new Context(new ConcreteStrategyA());
+  console.log('Client: Strategy is set to normal sorting.');
+  context.doSomeBusinessLogic();
 
-console.log('');
+  console.log('');
 
-console.log('Client: Strategy is set to reverse sorting.');
-context.setStrategy(new ConcreteStrategyB());
-context.doSomeBusinessLogic();
+  console.log('Client: Strategy is set to reverse sorting.');
+  context.setStrategy(new ConcreteStrategyB());
+  context.doSomeBusinessLogic();
+}
+
+export const name = 'Strategy';
