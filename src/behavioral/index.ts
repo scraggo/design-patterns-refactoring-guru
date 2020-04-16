@@ -1,4 +1,4 @@
-// export * as chainOfResponsibility from './chain-of-responsibility';
+export * as chainOfResponsibility from './chain-of-responsibility';
 export * as command from './command';
 export * as iterator from './iterator';
 // export * as mediator from './mediator';
