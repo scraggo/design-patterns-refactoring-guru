@@ -7,15 +7,31 @@ interface PatternExport {
   [key: string]: Pattern;
 }
 
+export function getLogger(debugEnabled = true) {
+  const logFunc: any = console.log;
+
+  logFunc.debug = (...args: any[]) => {
+    if (debugEnabled) {
+      console.log('DEBUG:', ...args);
+    }
+  };
+
+  return logFunc;
+}
+
+const log = getLogger(false);
+
+log.debug('HELLOOOOOO DEBUG');
+
 export const handlePattern = (pattern: Pattern) => {
   const { name, main } = pattern;
-  console.log(`### ${name} Pattern\n`);
+  log(`### ${name} Pattern\n`);
   main();
-  console.log('\n---\n');
+  log('\n---\n');
 };
 
 export const handlePatterns = (type: string, patterns: PatternExport) => {
-  console.log(`## ${type.toUpperCase()} PATTERNS\n`);
+  log(`## ${type.toUpperCase()} PATTERNS\n`);
   Object.values(patterns).forEach(pattern => {
     handlePattern(pattern);
   });

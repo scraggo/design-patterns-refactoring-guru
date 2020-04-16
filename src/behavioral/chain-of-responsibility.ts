@@ -1,3 +1,7 @@
+import { getLogger } from '../utils';
+
+const log = getLogger(false);
+
 /**
  * The Handler interface declares a method for building the chain of handlers.
  * It also declares a method for executing a request.
@@ -37,6 +41,7 @@ abstract class AbstractHandler implements Handler {
 */
 class MonkeyHandler extends AbstractHandler {
   public handle(request: string) {
+    log.debug(request);
     if (request === 'Banana') {
       return `Monkey: I'll eat the ${request}.`;
     }
@@ -47,6 +52,7 @@ class MonkeyHandler extends AbstractHandler {
 
 class SquirrelHandler extends AbstractHandler {
   public handle(request: string) {
+    log.debug(request);
     if (request === 'Nut') {
       return `Squirrel: I'll eat the ${request}.`;
     }
@@ -57,6 +63,7 @@ class SquirrelHandler extends AbstractHandler {
 
 class DogHandler extends AbstractHandler {
   public handle(request: string) {
+    log.debug(request);
     if (request === 'Meatball') {
       return `Dog: I'll eat the ${request}.`;
     }
@@ -71,13 +78,13 @@ class DogHandler extends AbstractHandler {
 */
 function clientCode(handler: Handler, foods: string[]) {
   for (const food of foods) {
-    console.log(`Client: Who wants a ${food}?`);
+    log(`Client: Who wants a ${food}?`);
 
     const result = handler.handle(food);
     if (result) {
-      console.log(`  ${result}`);
+      log(`  ${result}`);
     } else {
-      console.log(`  ${food} was left untouched.`);
+      log(`  ${food} was left untouched.`);
     }
   }
 }
@@ -97,13 +104,13 @@ function chain1() {
   * The client should be able to send a request to any handler, not just the
   * first one in the chain.
   */
-  console.log('Chain: Monkey > Squirrel > Dog\n');
+  log('Chain: Monkey > Squirrel > Dog\n');
   clientCode(monkey, foods);
-  console.log('');
+  log('');
 
-  console.log('Subchain: Squirrel > Dog\n');
+  log('Subchain: Squirrel > Dog\n');
   clientCode(squirrel, foods);
-  console.log('');
+  log('');
 }
 
 function chain2() {
@@ -122,9 +129,9 @@ function chain2() {
   * The client should be able to send a request to any handler, not just the
   * first one in the chain.
   */
-  console.log('Chain: Dog > Squirrel > Monkey\n');
+  log('Chain: Dog > Squirrel > Monkey\n');
   clientCode(dog, foods);
-  console.log('');
+  log('');
 }
 
 export function main() {
