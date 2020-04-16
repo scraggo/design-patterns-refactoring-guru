@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 
 import { main } from './main';
 
-class Designpatterns1 extends Command {
+class DesignPatternsRefactoringGuru extends Command {
   static description = 'describe the command here';
 
   static flags = {
@@ -18,16 +18,15 @@ class Designpatterns1 extends Command {
   static args = [{ name: 'file' }];
 
   async run() {
-    const { args, flags } = this.parse(Designpatterns1);
+    const { args, flags } = this.parse(DesignPatternsRefactoringGuru);
 
-    const name = flags.name || 'world';
-    this.log(`hello ${name} from ./src/index.ts`);
+    // this.log(`hello ${flags.name || 'world'} from ./src/index.ts`);
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`);
     }
 
-    main();
+    main({ name: flags.name });
   }
 }
 
-export = Designpatterns1;
+export = DesignPatternsRefactoringGuru;

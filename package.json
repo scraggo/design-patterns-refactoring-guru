@@ -1,16 +1,23 @@
 {
-  "name": "designpatterns1",
+  "name": "design-patterns-refactoring-guru",
   "description": "refactoring.guru design patterns",
   "version": "0.0.0",
   "author": "scraggo",
-  "bin": {
-    "designpatterns1": "./bin/run"
-  },
-  "bugs": "https://github.com/scraggo/designpatterns1/issues",
+  "repository": "scraggo/design-patterns-refactoring-guru",
+  "homepage": "https://github.com/scraggo/design-patterns-refactoring-guru",
+  "bugs": "https://github.com/scraggo/design-patterns-refactoring-guru/issues",
+  "keywords": [
+    "oclif",
+    "design patterns",
+    "typescript",
+    "OOP"
+  ],
+  "license": "MIT",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
-    "start": "./bin/run -n optionalName",
+    "start": "./bin/run",
+    "start-name": "./bin/run -n",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
@@ -35,22 +42,19 @@
     "ts-node": "^8.8.2",
     "typescript": "^3.8.3"
   },
-  "engines": {
-    "node": ">=8.0.0"
-  },
   "files": [
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/scraggo/designpatterns1",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
   "main": "lib/index.js",
-  "oclif": {
-    "bin": "designpatterns1"
+  "types": "lib/index.d.ts",
+  "bin": {
+    "designpatternsrf": "./bin/run"
   },
-  "repository": "scraggo/designpatterns1",
-  "types": "lib/index.d.ts"
+  "oclif": {
+    "bin": "designpatternsrf"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }
