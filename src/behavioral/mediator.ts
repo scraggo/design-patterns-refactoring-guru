@@ -42,11 +42,11 @@ class ConcreteMediator implements Mediator {
 * instance inside component objects.
 */
 class BaseComponent {
-  protected mediator: Mediator;
+  protected mediator!: Mediator;
 
-  constructor(mediator: Mediator = null) {
-    this.mediator = mediator;
-  }
+  // constructor(mediator = null) {
+  //   this.mediator = mediator;
+  // }
 
   public setMediator(mediator: Mediator): void {
     this.mediator = mediator;
@@ -81,16 +81,23 @@ class Component2 extends BaseComponent {
   }
 }
 
-/**
-* The client code.
-*/
-const c1 = new Component1();
-const c2 = new Component2();
-const mediator = new ConcreteMediator(c1, c2);
+export function main() {
+  /**
+  * The client code.
+  */
+  const c1 = new Component1();
+  const c2 = new Component2();
+  const mediator = new ConcreteMediator(c1, c2);
 
-console.log('Client triggers operation A.');
-c1.doA();
+  console.log('Initialized mediator', mediator);
+  console.log('');
 
-console.log('');
-console.log('Client triggers operation D.');
-c2.doD();
+  console.log('Client triggers operation A.');
+  c1.doA();
+
+  console.log('');
+  console.log('Client triggers operation D.');
+  c2.doD();
+}
+
+export const name = 'Mediator';

@@ -1,3 +1,49 @@
+
+/**
+* The Memento interface provides a way to retrieve the memento's metadata, such
+* as creation date or name. However, it doesn't expose the Originator's state.
+*/
+interface Memento {
+  getState(): string;
+
+  getName(): string;
+
+  getDate(): string;
+}
+
+/**
+* The Concrete Memento contains the infrastructure for storing the Originator's
+* state.
+*/
+class ConcreteMemento implements Memento {
+  private state: string;
+
+  private date: string;
+
+  constructor(state: string) {
+    this.state = state;
+    this.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  }
+
+  /*
+   * The Originator uses this method when restoring its state.
+   */
+  public getState(): string {
+    return this.state;
+  }
+
+  /*
+   * The rest of the methods are used by the Caretaker to display metadata.
+   */
+  public getName(): string {
+    return `${this.date} / (${this.state.substr(0, 9)}...)`;
+  }
+
+  public getDate(): string {
+    return this.date;
+  }
+}
+
 /**
  * The Originator holds some important state that may change over time. It also
  * defines a method for saving the state inside a memento and another method for
@@ -26,73 +72,28 @@ class Originator {
     console.log(`Originator: and my state has changed to: ${this.state}`);
   }
 
-  private generateRandomString(length: number = 10): string {
+  private generateRandomString(length = 10): string {
     const charSet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    return Array
-      .apply(null, { length })
+    return new Array(length)
+      .fill('')
       .map(() => charSet.charAt(Math.floor(Math.random() * charSet.length)))
       .join('');
   }
 
-  /**
+  /*
    * Saves the current state inside a memento.
    */
   public save(): Memento {
     return new ConcreteMemento(this.state);
   }
 
-  /**
+  /*
    * Restores the Originator's state from a memento object.
    */
   public restore(memento: Memento): void {
     this.state = memento.getState();
     console.log(`Originator: My state has changed to: ${this.state}`);
-  }
-}
-
-/**
-* The Memento interface provides a way to retrieve the memento's metadata, such
-* as creation date or name. However, it doesn't expose the Originator's state.
-*/
-interface Memento {
-  getState(): string;
-
-  getName(): string;
-
-  getDate(): string;
-}
-
-/**
-* The Concrete Memento contains the infrastructure for storing the Originator's
-* state.
-*/
-class ConcreteMemento implements Memento {
-  private state: string;
-
-  private date: string;
-
-  constructor(state: string) {
-    this.state = state;
-    this.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  }
-
-  /**
-   * The Originator uses this method when restoring its state.
-   */
-  public getState(): string {
-    return this.state;
-  }
-
-  /**
-   * The rest of the methods are used by the Caretaker to display metadata.
-   */
-  public getName(): string {
-    return `${this.date} / (${this.state.substr(0, 9)}...)`;
-  }
-
-  public getDate(): string {
-    return this.date;
   }
 }
 
@@ -116,10 +117,12 @@ class Caretaker {
   }
 
   public undo(): void {
-    if (!this.mementos.length) {
+    if (this.mementos.length === 0) {
+      console.log('Caretaker: Nothing left to undo.');
       return;
     }
-    const memento = this.mementos.pop();
+
+    const memento = this.mementos.pop() as Memento;
 
     console.log(`Caretaker: Restoring state to: ${memento.getName()}`);
     this.originator.restore(memento);
@@ -133,26 +136,36 @@ class Caretaker {
   }
 }
 
-/**
-* Client code.
-*/
-const originator = new Originator('Super-duper-super-puper-super.');
-const caretaker = new Caretaker(originator);
+export function main() {
+  /**
+  * Client code.
+  */
+  const originator = new Originator('Super-duper-super-puper-super.');
+  const caretaker = new Caretaker(originator);
 
-caretaker.backup();
-originator.doSomething();
+  caretaker.backup();
+  originator.doSomething();
 
-caretaker.backup();
-originator.doSomething();
+  caretaker.backup();
+  originator.doSomething();
 
-caretaker.backup();
-originator.doSomething();
+  caretaker.backup();
+  originator.doSomething();
 
-console.log('');
-caretaker.showHistory();
+  console.log('');
+  caretaker.showHistory();
 
-console.log('\nClient: Now, let\'s rollback!\n');
-caretaker.undo();
+  console.log('\nClient: Now, let\'s rollback!\n');
+  caretaker.undo();
 
-console.log('\nClient: Once more!\n');
-caretaker.undo();
+  console.log('\nClient: Once more!\n');
+  caretaker.undo();
+
+  console.log('\nClient: Once more!\n');
+  caretaker.undo();
+
+  console.log('\nClient: Once more!\n');
+  caretaker.undo();
+}
+
+export const name = 'Memento';
