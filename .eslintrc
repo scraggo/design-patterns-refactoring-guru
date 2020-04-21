@@ -1,6 +1,7 @@
 {
   "extends": ["oclif", "oclif-typescript"],
   "rules": {
+    "indent": 0,
     "lines-between-class-members": 0,
     "no-console": "warn",
     "object-curly-spacing": ["error", "always"],
