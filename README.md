@@ -15,3 +15,5 @@
 `npm start -- -n <Design Pattern Name>` - see console output for `<Design Pattern Name>` (if found)
 
 `npm run start-name -- <Design Pattern Name>` - (same as above)
+
+`npm run build` - compile src to .js in the /dist directory
