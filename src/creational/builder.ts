@@ -1,12 +1,12 @@
 /**
-* It makes sense to use the Builder pattern only when your products are quite
-* complex and require extensive configuration.
-*
-* Unlike in other creational patterns, different concrete builders can produce
-* unrelated products. In other words, results of various builders may not
-* always follow the same interface.
-*/
-class Product1 {
+ * It makes sense to use the Builder pattern only when your products are quite
+ * complex and require extensive configuration.
+ *
+ * Unlike in other creational patterns, different concrete builders can produce
+ * unrelated products. In other words, results of various builders may not
+ * always follow the same interface.
+ */
+export class Product1 {
   public parts: string[] = [];
 
   public listParts(): void {
@@ -25,11 +25,11 @@ interface Builder {
 }
 
 /**
-* The Concrete Builder classes follow the Builder interface and provide
-* specific implementations of the building steps. Your program may have several
-* variations of Builders, implemented differently.
-*/
-class ConcreteBuilder1 implements Builder {
+ * The Concrete Builder classes follow the Builder interface and provide
+ * specific implementations of the building steps. Your program may have several
+ * variations of Builders, implemented differently.
+ */
+export class ConcreteBuilder1 implements Builder {
   private product!: Product1;
 
   /**
@@ -81,12 +81,12 @@ class ConcreteBuilder1 implements Builder {
 }
 
 /**
-* The Director is only responsible for executing the building steps in a
-* particular sequence. It is helpful when producing products according to a
-* specific order or configuration. Strictly speaking, the Director class is
-* optional, since the client can control builders directly.
-*/
-class Director {
+ * The Director is only responsible for executing the building steps in a
+ * particular sequence. It is helpful when producing products according to a
+ * specific order or configuration. Strictly speaking, the Director class is
+ * optional, since the client can control builders directly.
+ */
+export class Director {
   private builder!: Builder;
 
   /*

@@ -6,14 +6,14 @@ describe('designpatterns1', () => {
   test
     .stdout()
     .do(() => cmd.run([]))
-    .it('runs hello', (ctx) => {
-      expect(ctx.stdout).to.contain('hello world');
+    .it('runs default command', (ctx) => {
+      expect(ctx.stdout).to.contain('# Design Patterns - refactoring.guru');
     });
 
   test
     .stdout()
-    .do(() => cmd.run(['--name', 'jeff']))
-    .it('runs hello --name jeff', (ctx) => {
-      expect(ctx.stdout).to.contain('hello jeff');
+    .do(() => cmd.run(['--name', 'builder']))
+    .it('runs hello --name builder', (ctx) => {
+      expect(ctx.stdout).to.contain('### Builder Pattern');
     });
 });
