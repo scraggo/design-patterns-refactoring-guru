@@ -24,47 +24,64 @@ describe('Builder', () => {
     logStub.restore();
   });
 
-  it('builds standard MVP', () => {
-    director.buildMinimalViableProduct();
-    const product = builder.getProduct();
+  describe('without Director', () => {
+    it('ConcreteBuilder1 calls reset() after getProduct()', () => {
+      builder.producePartA();
 
-    expect(product).to.deep.equal({
-      parts: ['PartA1'],
+      const product = builder.getProduct();
+
+      expect(product).to.deep.equal({
+        parts: ['PartA1'],
+      });
+      expect(builder.getProduct()).to.deep.equal({
+        parts: [],
+      });
     });
 
-    product.listParts();
-    expect(logStub).to.have.been.calledOnceWithExactly(
-      'Product parts: PartA1\n'
-    );
+    it('can build a custom project', () => {
+      builder.producePartA();
+      builder.producePartC();
+
+      const product = builder.getProduct();
+
+      expect(product).to.deep.equal({
+        parts: ['PartA1', 'PartC1'],
+      });
+
+      product.listParts();
+      expect(logStub).to.have.been.calledOnceWithExactly(
+        'Product parts: PartA1, PartC1\n'
+      );
+    });
   });
 
-  it('builds Standard full featured product', () => {
-    director.buildFullFeaturedProduct();
-    const product = builder.getProduct();
+  describe('with Director', () => {
+    it('builds Standard MVP', () => {
+      director.buildMinimalViableProduct();
+      const product = builder.getProduct();
 
-    expect(product).to.deep.equal({
-      parts: ['PartA1', 'PartB1', 'PartC1'],
+      expect(product).to.deep.equal({
+        parts: ['PartA1'],
+      });
+
+      product.listParts();
+      expect(logStub).to.have.been.calledOnceWithExactly(
+        'Product parts: PartA1\n'
+      );
     });
 
-    product.listParts();
-    expect(logStub).to.have.been.calledOnceWithExactly(
-      'Product parts: PartA1, PartB1, PartC1\n'
-    );
-  });
+    it('builds Standard full featured product', () => {
+      director.buildFullFeaturedProduct();
+      const product = builder.getProduct();
 
-  it('can be used without a Director class to build a custom project', () => {
-    builder.producePartA();
-    builder.producePartC();
+      expect(product).to.deep.equal({
+        parts: ['PartA1', 'PartB1', 'PartC1'],
+      });
 
-    const product = builder.getProduct();
-
-    expect(product).to.deep.equal({
-      parts: ['PartA1', 'PartC1'],
+      product.listParts();
+      expect(logStub).to.have.been.calledOnceWithExactly(
+        'Product parts: PartA1, PartB1, PartC1\n'
+      );
     });
-
-    product.listParts();
-    expect(logStub).to.have.been.calledOnceWithExactly(
-      'Product parts: PartA1, PartC1\n'
-    );
   });
 });
