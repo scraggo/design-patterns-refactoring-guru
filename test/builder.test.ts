@@ -31,10 +31,9 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(
-      consoleSpy.getCall(0).calledWithExactly('Product parts: PartA1\n'),
-      JSON.stringify(consoleSpy.getCall(0))
-    ).to.equal(true);
+    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+      'Product parts: PartA1\n'
+    );
   });
 
   it('builds Standard full featured product', () => {
@@ -46,12 +45,9 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(
-      consoleSpy
-        .getCall(0)
-        .calledWithExactly('Product parts: PartA1, PartB1, PartC1\n'),
-      JSON.stringify(consoleSpy.getCall(0))
-    ).to.equal(true);
+    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+      'Product parts: PartA1, PartB1, PartC1\n'
+    );
   });
 
   it('can be used without a Director class to build a custom project', () => {
@@ -65,11 +61,8 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(
-      consoleSpy
-        .getCall(0)
-        .calledWithExactly('Product parts: PartA1, PartC1\n'),
-      JSON.stringify(consoleSpy.getCall(0))
-    ).to.equal(true);
+    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+      'Product parts: PartA1, PartC1\n'
+    );
   });
 });
