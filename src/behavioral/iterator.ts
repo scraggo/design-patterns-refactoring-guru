@@ -89,7 +89,7 @@ class AlphabeticalOrderIterator implements Iterator<string> {
  * Concrete Collections provide one or several methods for retrieving fresh
  * iterator instances, compatible with the collection class.
  */
-class WordsCollection implements Aggregator {
+export class WordsCollection implements Aggregator {
   private items: string[] = [];
 
   public getItems(): string[] {
@@ -101,6 +101,7 @@ class WordsCollection implements Aggregator {
   }
 
   public addItem(item: string): void {
+    // this might be where I sort the items
     this.items.push(item);
   }
 
