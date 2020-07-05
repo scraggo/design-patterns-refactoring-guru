@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The base Component interface defines operations that can be altered by
  * decorators.
@@ -7,9 +9,9 @@ interface Component {
 }
 
 /**
-* Concrete Components provide default implementations of the operations. There
-* might be several variations of these classes.
-*/
+ * Concrete Components provide default implementations of the operations. There
+ * might be several variations of these classes.
+ */
 class ConcreteComponent implements Component {
   public operation(): string {
     return 'ConcreteComponent';
@@ -17,12 +19,12 @@ class ConcreteComponent implements Component {
 }
 
 /**
-* The base Decorator class follows the same interface as the other components.
-* The primary purpose of this class is to define the wrapping interface for all
-* concrete decorators. The default implementation of the wrapping code might
-* include a field for storing a wrapped component and the means to initialize
-* it.
-*/
+ * The base Decorator class follows the same interface as the other components.
+ * The primary purpose of this class is to define the wrapping interface for all
+ * concrete decorators. The default implementation of the wrapping code might
+ * include a field for storing a wrapped component and the means to initialize
+ * it.
+ */
 class Decorator implements Component {
   protected component: Component;
 
@@ -39,8 +41,8 @@ class Decorator implements Component {
 }
 
 /**
-* Concrete Decorators call the wrapped object and alter its result in some way.
-*/
+ * Concrete Decorators call the wrapped object and alter its result in some way.
+ */
 class ConcreteDecoratorA extends Decorator {
   /*
    * Decorators may call parent implementation of the operation, instead of
@@ -53,9 +55,9 @@ class ConcreteDecoratorA extends Decorator {
 }
 
 /**
-* Decorators can execute their behavior either before or after the call to a
-* wrapped object.
-*/
+ * Decorators can execute their behavior either before or after the call to a
+ * wrapped object.
+ */
 class ConcreteDecoratorB extends Decorator {
   public operation(): string {
     return `ConcreteDecoratorB(${super.operation()})`;
@@ -70,7 +72,7 @@ class ConcreteDecoratorB extends Decorator {
 function clientCode(component: Component) {
   // ...
 
-  console.log(`RESULT: ${component.operation()}`);
+  log(`RESULT: ${component.operation()}`);
 
   // ...
 }
@@ -80,19 +82,19 @@ export function main() {
    * This way the client code can support both simple components...
    */
   const simple = new ConcreteComponent();
-  console.log('Client: I\'ve got a simple component:');
+  log("Client: I've got a simple component:");
   clientCode(simple);
-  console.log('');
+  log('');
 
   /**
-  * ...as well as decorated ones.
-  *
-  * Note how decorators can wrap not only simple components but the other
-  * decorators as well.
-  */
+   * ...as well as decorated ones.
+   *
+   * Note how decorators can wrap not only simple components but the other
+   * decorators as well.
+   */
   const decorator1 = new ConcreteDecoratorA(simple);
   const decorator2 = new ConcreteDecoratorB(decorator1);
-  console.log('Client: Now I\'ve got a decorated component:');
+  log("Client: Now I've got a decorated component:");
   clientCode(decorator2);
 }
 

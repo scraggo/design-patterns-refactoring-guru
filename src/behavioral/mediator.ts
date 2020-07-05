@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The Mediator interface declares a method used by components to notify the
  * mediator about various events. The Mediator may react to these events and
@@ -8,9 +10,9 @@ interface Mediator {
 }
 
 /**
-* Concrete Mediators implement cooperative behavior by coordinating several
-* components.
-*/
+ * Concrete Mediators implement cooperative behavior by coordinating several
+ * components.
+ */
 class ConcreteMediator implements Mediator {
   private component1: Component1;
 
@@ -25,12 +27,12 @@ class ConcreteMediator implements Mediator {
 
   public notify(sender: object, event: string): void {
     if (event === 'A') {
-      console.log('Mediator reacts on A and triggers following operations:');
+      log('Mediator reacts on A and triggers following operations:');
       this.component2.doC();
     }
 
     if (event === 'D') {
-      console.log('Mediator reacts on D and triggers following operations:');
+      log('Mediator reacts on D and triggers following operations:');
       this.component1.doB();
       this.component2.doC();
     }
@@ -38,9 +40,9 @@ class ConcreteMediator implements Mediator {
 }
 
 /**
-* The Base Component provides the basic functionality of storing a mediator's
-* instance inside component objects.
-*/
+ * The Base Component provides the basic functionality of storing a mediator's
+ * instance inside component objects.
+ */
 class BaseComponent {
   protected mediator!: Mediator;
 
@@ -54,49 +56,49 @@ class BaseComponent {
 }
 
 /**
-* Concrete Components implement various functionality. They don't depend on
-* other components. They also don't depend on any concrete mediator classes.
-*/
+ * Concrete Components implement various functionality. They don't depend on
+ * other components. They also don't depend on any concrete mediator classes.
+ */
 class Component1 extends BaseComponent {
   public doA(): void {
-    console.log('Component 1 does A.');
+    log('Component 1 does A.');
     this.mediator.notify(this, 'A');
   }
 
   public doB(): void {
-    console.log('Component 1 does B.');
+    log('Component 1 does B.');
     this.mediator.notify(this, 'B');
   }
 }
 
 class Component2 extends BaseComponent {
   public doC(): void {
-    console.log('Component 2 does C.');
+    log('Component 2 does C.');
     this.mediator.notify(this, 'C');
   }
 
   public doD(): void {
-    console.log('Component 2 does D.');
+    log('Component 2 does D.');
     this.mediator.notify(this, 'D');
   }
 }
 
 export function main() {
   /**
-  * The client code.
-  */
+   * The client code.
+   */
   const c1 = new Component1();
   const c2 = new Component2();
   const mediator = new ConcreteMediator(c1, c2);
 
-  console.log('Initialized mediator', mediator);
-  console.log('');
+  log('Initialized mediator', mediator);
+  log('');
 
-  console.log('Client triggers operation A.');
+  log('Client triggers operation A.');
   c1.doA();
 
-  console.log('');
-  console.log('Client triggers operation D.');
+  log('');
+  log('Client triggers operation D.');
   c2.doD();
 }
 

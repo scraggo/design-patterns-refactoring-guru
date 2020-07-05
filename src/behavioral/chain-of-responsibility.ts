@@ -1,6 +1,4 @@
-import { getLogger } from '../utils';
-
-const log = getLogger(false);
+import { log } from '../utils';
 
 /**
  * The Handler interface declares a method for building the chain of handlers.
@@ -13,8 +11,8 @@ interface Handler {
 }
 
 /**
-* The default chaining behavior can be implemented inside a base handler class.
-*/
+ * The default chaining behavior can be implemented inside a base handler class.
+ */
 abstract class AbstractHandler implements Handler {
   private nextHandler: Handler | null = null;
 
@@ -36,9 +34,9 @@ abstract class AbstractHandler implements Handler {
 }
 
 /**
-* All Concrete Handlers either handle a request or pass it to the next handler
-* in the chain.
-*/
+ * All Concrete Handlers either handle a request or pass it to the next handler
+ * in the chain.
+ */
 class MonkeyHandler extends AbstractHandler {
   public handle(request: string) {
     log.debug(request);
@@ -73,9 +71,9 @@ class DogHandler extends AbstractHandler {
 }
 
 /*
-* The client code is usually suited to work with a single handler. In most
-* cases, it is not even aware that the handler is part of a chain.
-*/
+ * The client code is usually suited to work with a single handler. In most
+ * cases, it is not even aware that the handler is part of a chain.
+ */
 function clientCode(handler: Handler, foods: string[]) {
   for (const food of foods) {
     log(`Client: Who wants a ${food}?`);
@@ -91,8 +89,8 @@ function clientCode(handler: Handler, foods: string[]) {
 
 function chain1() {
   /**
-    * The other part of the client code constructs the actual chain.
-    */
+   * The other part of the client code constructs the actual chain.
+   */
   const monkey = new MonkeyHandler();
   const squirrel = new SquirrelHandler();
   const dog = new DogHandler();
@@ -101,9 +99,9 @@ function chain1() {
 
   const foods = ['Nut', 'Banana', 'Cup of coffee'];
   /**
-  * The client should be able to send a request to any handler, not just the
-  * first one in the chain.
-  */
+   * The client should be able to send a request to any handler, not just the
+   * first one in the chain.
+   */
   log('Chain: Monkey > Squirrel > Dog\n');
   clientCode(monkey, foods);
   log('');
@@ -115,8 +113,8 @@ function chain1() {
 
 function chain2() {
   /**
-    * The other part of the client code constructs the actual chain.
-    */
+   * The other part of the client code constructs the actual chain.
+   */
   const dog = new DogHandler();
   const monkey = new MonkeyHandler();
   const squirrel = new SquirrelHandler();
@@ -126,9 +124,9 @@ function chain2() {
   const foods = ['Nut', 'Banana', 'Cup of coffee', 'Meatball'];
 
   /**
-  * The client should be able to send a request to any handler, not just the
-  * first one in the chain.
-  */
+   * The client should be able to send a request to any handler, not just the
+   * first one in the chain.
+   */
   log('Chain: Dog > Squirrel > Monkey\n');
   clientCode(dog, foods);
   log('');

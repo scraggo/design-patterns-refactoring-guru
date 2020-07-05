@@ -1,14 +1,16 @@
+import { log } from '../utils';
+
 /**
-* The Product interface declares the operations that all concrete products must
-* implement.
-*/
+ * The Product interface declares the operations that all concrete products must
+ * implement.
+ */
 interface Product {
   operation(): string;
 }
 
 /**
-* Concrete Products provide various implementations of the Product interface.
-*/
+ * Concrete Products provide various implementations of the Product interface.
+ */
 class ConcreteProduct1 implements Product {
   public operation(): string {
     return '{Result of the ConcreteProduct1}';
@@ -49,9 +51,9 @@ abstract class Creator {
 }
 
 /**
-* Concrete Creators override the factory method in order to change the
-* resulting product's type.
-*/
+ * Concrete Creators override the factory method in order to change the
+ * resulting product's type.
+ */
 class ConcreteCreator1 extends Creator {
   /*
    * Note that the signature of the method still uses the abstract product
@@ -71,14 +73,14 @@ class ConcreteCreator2 extends Creator {
 }
 
 /*
-* The client code works with an instance of a concrete creator, albeit through
-* its base interface. As long as the client keeps working with the creator via
-* the base interface, you can pass it any creator's subclass.
-*/
+ * The client code works with an instance of a concrete creator, albeit through
+ * its base interface. As long as the client keeps working with the creator via
+ * the base interface, you can pass it any creator's subclass.
+ */
 function clientCode(creator: Creator) {
   // ...
-  console.log('Client: I\'m not aware of the creator\'s class, but it still works.');
-  console.log(creator.someOperation());
+  log("Client: I'm not aware of the creator's class, but it still works.");
+  log(creator.someOperation());
   // ...
 }
 
@@ -87,11 +89,11 @@ export function main() {
    * The Application picks a creator's type depending on the configuration or
    * environment.
    */
-  console.log('App: Launched with the ConcreteCreator1.');
+  log('App: Launched with the ConcreteCreator1.');
   clientCode(new ConcreteCreator1());
-  console.log('');
+  log('');
 
-  console.log('App: Launched with the ConcreteCreator2.');
+  log('App: Launched with the ConcreteCreator2.');
   clientCode(new ConcreteCreator2());
 }
 

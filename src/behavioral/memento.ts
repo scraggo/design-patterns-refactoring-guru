@@ -1,8 +1,9 @@
+import { log } from '../utils';
 
 /**
-* The Memento interface provides a way to retrieve the memento's metadata, such
-* as creation date or name. However, it doesn't expose the Originator's state.
-*/
+ * The Memento interface provides a way to retrieve the memento's metadata, such
+ * as creation date or name. However, it doesn't expose the Originator's state.
+ */
 interface Memento {
   getState(): string;
 
@@ -12,9 +13,9 @@ interface Memento {
 }
 
 /**
-* The Concrete Memento contains the infrastructure for storing the Originator's
-* state.
-*/
+ * The Concrete Memento contains the infrastructure for storing the Originator's
+ * state.
+ */
 class ConcreteMemento implements Memento {
   private state: string;
 
@@ -58,7 +59,7 @@ class Originator {
 
   constructor(state: string) {
     this.state = state;
-    console.log(`Originator: My initial state is: ${state}`);
+    log(`Originator: My initial state is: ${state}`);
   }
 
   /**
@@ -67,9 +68,9 @@ class Originator {
    * business logic via the save() method.
    */
   public doSomething(): void {
-    console.log('Originator: I\'m doing something important.');
+    log("Originator: I'm doing something important.");
     this.state = this.generateRandomString(30);
-    console.log(`Originator: and my state has changed to: ${this.state}`);
+    log(`Originator: and my state has changed to: ${this.state}`);
   }
 
   private generateRandomString(length = 10): string {
@@ -93,15 +94,15 @@ class Originator {
    */
   public restore(memento: Memento): void {
     this.state = memento.getState();
-    console.log(`Originator: My state has changed to: ${this.state}`);
+    log(`Originator: My state has changed to: ${this.state}`);
   }
 }
 
 /**
-* The Caretaker doesn't depend on the Concrete Memento class. Therefore, it
-* doesn't have access to the originator's state, stored inside the memento. It
-* works with all mementos via the base Memento interface.
-*/
+ * The Caretaker doesn't depend on the Concrete Memento class. Therefore, it
+ * doesn't have access to the originator's state, stored inside the memento. It
+ * works with all mementos via the base Memento interface.
+ */
 class Caretaker {
   private mementos: Memento[] = [];
 
@@ -112,34 +113,34 @@ class Caretaker {
   }
 
   public backup(): void {
-    console.log('\nCaretaker: Saving Originator\'s state...');
+    log("\nCaretaker: Saving Originator's state...");
     this.mementos.push(this.originator.save());
   }
 
   public undo(): void {
     if (this.mementos.length === 0) {
-      console.log('Caretaker: Nothing left to undo.');
+      log('Caretaker: Nothing left to undo.');
       return;
     }
 
     const memento = this.mementos.pop() as Memento;
 
-    console.log(`Caretaker: Restoring state to: ${memento.getName()}`);
+    log(`Caretaker: Restoring state to: ${memento.getName()}`);
     this.originator.restore(memento);
   }
 
   public showHistory(): void {
-    console.log('Caretaker: Here\'s the list of mementos:');
+    log("Caretaker: Here's the list of mementos:");
     for (const memento of this.mementos) {
-      console.log(memento.getName());
+      log(memento.getName());
     }
   }
 }
 
 export function main() {
   /**
-  * Client code.
-  */
+   * Client code.
+   */
   const originator = new Originator('Super-duper-super-puper-super.');
   const caretaker = new Caretaker(originator);
 
@@ -152,19 +153,19 @@ export function main() {
   caretaker.backup();
   originator.doSomething();
 
-  console.log('');
+  log('');
   caretaker.showHistory();
 
-  console.log('\nClient: Now, let\'s rollback!\n');
+  log("\nClient: Now, let's rollback!\n");
   caretaker.undo();
 
-  console.log('\nClient: Once more!\n');
+  log('\nClient: Once more!\n');
   caretaker.undo();
 
-  console.log('\nClient: Once more!\n');
+  log('\nClient: Once more!\n');
   caretaker.undo();
 
-  console.log('\nClient: Once more!\n');
+  log('\nClient: Once more!\n');
   caretaker.undo();
 }
 

@@ -1,3 +1,4 @@
+import { log } from '../utils';
 import { EmptyObject } from '../types';
 
 /**
@@ -8,8 +9,8 @@ interface Command {
 }
 
 /**
-* Some commands can implement simple operations on their own.
-*/
+ * Some commands can implement simple operations on their own.
+ */
 class SimpleCommand implements Command {
   private payload: string;
 
@@ -18,14 +19,16 @@ class SimpleCommand implements Command {
   }
 
   public execute(): void {
-    console.log(`SimpleCommand: See, I can do simple things like printing (${this.payload})`);
+    log(
+      `SimpleCommand: See, I can do simple things like printing (${this.payload})`
+    );
   }
 }
 
 /**
-* However, some commands can delegate more complex operations to other objects,
-* called "receivers."
-*/
+ * However, some commands can delegate more complex operations to other objects,
+ * called "receivers."
+ */
 class ComplexCommand implements Command {
   private receiver: Receiver;
 
@@ -50,31 +53,31 @@ class ComplexCommand implements Command {
    * Commands can delegate to any methods of a receiver.
    */
   public execute(): void {
-    console.log('ComplexCommand: Complex stuff should be done by a receiver object.');
+    log('ComplexCommand: Complex stuff should be done by a receiver object.');
     this.receiver.doSomething(this.a);
     this.receiver.doSomethingElse(this.b);
   }
 }
 
 /**
-* The Receiver classes contain some important business logic. They know how to
-* perform all kinds of operations, associated with carrying out a request. In
-* fact, any class may serve as a Receiver.
-*/
+ * The Receiver classes contain some important business logic. They know how to
+ * perform all kinds of operations, associated with carrying out a request. In
+ * fact, any class may serve as a Receiver.
+ */
 class Receiver {
   public doSomething(a: string): void {
-    console.log(`Receiver: Working on (${a}.)`);
+    log(`Receiver: Working on (${a}.)`);
   }
 
   public doSomethingElse(b: string): void {
-    console.log(`Receiver: Also working on (${b}.)`);
+    log(`Receiver: Also working on (${b}.)`);
   }
 }
 
 /**
-* The Invoker is associated with one or several commands. It sends a request to
-* the command.
-*/
+ * The Invoker is associated with one or several commands. It sends a request to
+ * the command.
+ */
 class Invoker {
   private onStart: Command | EmptyObject = {};
 
@@ -97,14 +100,14 @@ class Invoker {
    * command.
    */
   public doSomethingImportant(): void {
-    console.log('Invoker: Does anybody want something done before I begin?');
+    log('Invoker: Does anybody want something done before I begin?');
     if (this.isCommand(this.onStart)) {
       this.onStart.execute();
     }
 
-    console.log('Invoker: ...doing something really important...');
+    log('Invoker: ...doing something really important...');
 
-    console.log('Invoker: Does anybody want something done after I finish?');
+    log('Invoker: Does anybody want something done after I finish?');
     if (this.isCommand(this.onFinish)) {
       this.onFinish.execute();
     }
@@ -117,12 +120,14 @@ class Invoker {
 
 export function main() {
   /**
-  * The client code can parameterize an invoker with any commands.
-  */
+   * The client code can parameterize an invoker with any commands.
+   */
   const invoker = new Invoker();
   invoker.setOnStart(new SimpleCommand('Say Hi!'));
   const receiver = new Receiver();
-  invoker.setOnFinish(new ComplexCommand(receiver, 'Send email', 'Save report'));
+  invoker.setOnFinish(
+    new ComplexCommand(receiver, 'Send email', 'Save report')
+  );
 
   invoker.doSomethingImportant();
 }

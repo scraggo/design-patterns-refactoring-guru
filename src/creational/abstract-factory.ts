@@ -1,3 +1,4 @@
+import { log } from '../utils';
 
 /**
  * Each distinct product of a product family should have a base interface. All
@@ -23,10 +24,10 @@ class ConcreteProductA2 implements AbstractProductA {
 }
 
 /**
-* Here's the the base interface of another product. All products can interact
-* with each other, but proper interaction is possible only between products of
-* the same concrete variant.
-*/
+ * Here's the the base interface of another product. All products can interact
+ * with each other, but proper interaction is possible only between products of
+ * the same concrete variant.
+ */
 interface AbstractProductB {
   /**
    * Product B is able to do its own thing...
@@ -43,8 +44,8 @@ interface AbstractProductB {
 }
 
 /**
-* These Concrete Products are created by corresponding Concrete Factories.
-*/
+ * These Concrete Products are created by corresponding Concrete Factories.
+ */
 class ConcreteProductB1 implements AbstractProductB {
   public usefulFunctionB(): string {
     return 'The result of the product B1.';
@@ -91,11 +92,11 @@ interface AbstractFactory {
 }
 
 /**
-* Concrete Factories produce a family of products that belong to a single
-* variant. The factory guarantees that resulting products are compatible. Note
-* that signatures of the Concrete Factory's methods return an abstract product,
-* while inside the method a concrete product is instantiated.
-*/
+ * Concrete Factories produce a family of products that belong to a single
+ * variant. The factory guarantees that resulting products are compatible. Note
+ * that signatures of the Concrete Factory's methods return an abstract product,
+ * while inside the method a concrete product is instantiated.
+ */
 class ConcreteFactory1 implements AbstractFactory {
   public createProductA(): AbstractProductA {
     return new ConcreteProductA1();
@@ -107,8 +108,8 @@ class ConcreteFactory1 implements AbstractFactory {
 }
 
 /**
-* Each Concrete Factory has a corresponding product variant.
-*/
+ * Each Concrete Factory has a corresponding product variant.
+ */
 class ConcreteFactory2 implements AbstractFactory {
   public createProductA(): AbstractProductA {
     return new ConcreteProductA2();
@@ -120,28 +121,28 @@ class ConcreteFactory2 implements AbstractFactory {
 }
 
 /*
-* The client code works with factories and products only through abstract
-* types: AbstractFactory and AbstractProduct. This lets you pass any factory or
-* product subclass to the client code without breaking it.
-*/
+ * The client code works with factories and products only through abstract
+ * types: AbstractFactory and AbstractProduct. This lets you pass any factory or
+ * product subclass to the client code without breaking it.
+ */
 function clientCode(factory: AbstractFactory) {
   const productA = factory.createProductA();
   const productB = factory.createProductB();
 
-  console.log(productB.usefulFunctionB());
-  console.log(productB.anotherUsefulFunctionB(productA));
+  log(productB.usefulFunctionB());
+  log(productB.anotherUsefulFunctionB(productA));
 }
 
 export function main() {
   /**
-  * The client code can work with any concrete factory class.
-  */
-  console.log('Client: Testing client code with the first factory type...');
+   * The client code can work with any concrete factory class.
+   */
+  log('Client: Testing client code with the first factory type...');
   clientCode(new ConcreteFactory1());
 
-  console.log('');
+  log('');
 
-  console.log('Client: Testing the same client code with the second factory type...');
+  log('Client: Testing the same client code with the second factory type...');
   clientCode(new ConcreteFactory2());
 }
 

@@ -1,3 +1,4 @@
+import { log } from '../utils';
 const INITIAL_STATE = 0;
 
 /**
@@ -17,9 +18,9 @@ interface Subject {
 }
 
 /**
-* The Subject owns some important state and notifies observers when the state
-* changes.
-*/
+ * The Subject owns some important state and notifies observers when the state
+ * changes.
+ */
 class ConcreteSubject implements Subject {
   /**
    * @type {number} For the sake of simplicity, the Subject's state, essential
@@ -40,28 +41,28 @@ class ConcreteSubject implements Subject {
   public attach(observer: Observer): void {
     const isExist = this.observers.includes(observer);
     if (isExist) {
-      return console.log('Subject: Observer has been attached already.');
+      return log('Subject: Observer has been attached already.');
     }
 
-    console.log('Subject: Attached an observer.');
+    log('Subject: Attached an observer.');
     this.observers.push(observer);
   }
 
   public detach(observer: Observer): void {
     const observerIndex = this.observers.indexOf(observer);
     if (observerIndex === -1) {
-      return console.log('Subject: Nonexistent observer.');
+      return log('Subject: Nonexistent observer.');
     }
 
     this.observers.splice(observerIndex, 1);
-    console.log('Subject: Detached an observer.');
+    log('Subject: Detached an observer.');
   }
 
   /**
    * Trigger an update in each subscriber.
    */
   public notify(): void {
-    console.log('Subject: Notifying observers...');
+    log('Subject: Notifying observers...');
     for (const observer of this.observers) {
       observer.update(this);
     }
@@ -74,30 +75,30 @@ class ConcreteSubject implements Subject {
    * happen (or after it).
    */
   public someBusinessLogic(): void {
-    console.log('\nSubject: I\'m doing something important.');
+    log("\nSubject: I'm doing something important.");
     this.state = Math.floor(Math.random() * (10 + 1));
 
-    console.log(`Subject: My state has just changed to: ${this.state}`);
+    log(`Subject: My state has just changed to: ${this.state}`);
     this.notify();
   }
 }
 
 /**
-* The Observer interface declares the update method, used by subjects.
-*/
+ * The Observer interface declares the update method, used by subjects.
+ */
 interface Observer {
   // Receive update from subject.
   update(subject: Subject): void;
 }
 
 /**
-* Concrete Observers react to the updates issued by the Subject they had been
-* attached to.
-*/
+ * Concrete Observers react to the updates issued by the Subject they had been
+ * attached to.
+ */
 class ConcreteObserverA implements Observer {
   public update(subject: Subject): void {
     if (subject.state < 3) {
-      console.log('ConcreteObserverA: Reacted to the event.');
+      log('ConcreteObserverA: Reacted to the event.');
     }
   }
 }
@@ -105,15 +106,15 @@ class ConcreteObserverA implements Observer {
 class ConcreteObserverB implements Observer {
   public update(subject: Subject): void {
     if (subject.state === 0 || subject.state >= 2) {
-      console.log('ConcreteObserverB: Reacted to the event.');
+      log('ConcreteObserverB: Reacted to the event.');
     }
   }
 }
 
 export function main() {
   /**
-  * The client code.
-  */
+   * The client code.
+   */
   const subject = new ConcreteSubject();
 
   const observer1 = new ConcreteObserverA();

@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * It makes sense to use the Builder pattern only when your products are quite
  * complex and require extensive configuration.
@@ -10,7 +12,7 @@ export class Product1 {
   public parts: string[] = [];
 
   public listParts(): void {
-    console.log(`Product parts: ${this.parts.join(', ')}\n`);
+    log(`Product parts: ${this.parts.join(', ')}\n`);
   }
 }
 
@@ -118,17 +120,17 @@ export function main() {
   const director = new Director();
   director.setBuilder(builder);
 
-  console.log('Standard basic product:');
+  log('Standard basic product:');
   director.buildMinimalViableProduct();
   builder.getProduct().listParts();
 
-  console.log('Standard full featured product:');
+  log('Standard full featured product:');
   director.buildFullFeaturedProduct();
   builder.getProduct().listParts();
 
   // Remember, the Builder pattern can be used without a Director class.
-  console.log('the Builder pattern can be used without a Director class...');
-  console.log('Custom product:');
+  log('the Builder pattern can be used without a Director class...');
+  log('Custom product:');
   builder.producePartA();
   builder.producePartC();
   builder.getProduct().listParts();

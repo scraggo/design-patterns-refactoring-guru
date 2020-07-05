@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The Abstraction defines the interface for the "control" part of the two class
  * hierarchies. It maintains a reference to an object of the Implementation
@@ -17,8 +19,8 @@ class Abstraction {
 }
 
 /**
-* You can extend the Abstraction without changing the Implementation classes.
-*/
+ * You can extend the Abstraction without changing the Implementation classes.
+ */
 class ExtendedAbstraction extends Abstraction {
   public operation(): string {
     const result = this.implementation.operationImplementation();
@@ -27,20 +29,20 @@ class ExtendedAbstraction extends Abstraction {
 }
 
 /**
-* The Implementation defines the interface for all implementation classes. It
-* doesn't have to match the Abstraction's interface. In fact, the two
-* interfaces can be entirely different. Typically the Implementation interface
-* provides only primitive operations, while the Abstraction defines higher-
-* level operations based on those primitives.
-*/
+ * The Implementation defines the interface for all implementation classes. It
+ * doesn't have to match the Abstraction's interface. In fact, the two
+ * interfaces can be entirely different. Typically the Implementation interface
+ * provides only primitive operations, while the Abstraction defines higher-
+ * level operations based on those primitives.
+ */
 interface Implementation {
   operationImplementation(): string;
 }
 
 /**
-* Each Concrete Implementation corresponds to a specific platform and
-* implements the Implementation interface using that platform's API.
-*/
+ * Each Concrete Implementation corresponds to a specific platform and
+ * implements the Implementation interface using that platform's API.
+ */
 class ConcreteImplementationA implements Implementation {
   public operationImplementation(): string {
     return 'ConcreteImplementationA: Here\'s the result on the platform A.';
@@ -54,29 +56,29 @@ class ConcreteImplementationB implements Implementation {
 }
 
 /*
-* Except for the initialization phase, where an Abstraction object gets linked
-* with a specific Implementation object, the client code should only depend on
-* the Abstraction class. This way the client code can support any abstraction-
-* implementation combination.
-*/
+ * Except for the initialization phase, where an Abstraction object gets linked
+ * with a specific Implementation object, the client code should only depend on
+ * the Abstraction class. This way the client code can support any abstraction-
+ * implementation combination.
+ */
 function clientCode(abstraction: Abstraction) {
   // ..
 
-  console.log(abstraction.operation());
+  log(abstraction.operation());
 
   // ..
 }
 
 export function main() {
   /**
-  * The client code should be able to work with any pre-configured abstraction-
-  * implementation combination.
-  */
+   * The client code should be able to work with any pre-configured abstraction-
+   * implementation combination.
+   */
   let implementation = new ConcreteImplementationA();
   let abstraction = new Abstraction(implementation);
   clientCode(abstraction);
 
-  console.log('');
+  log('');
 
   implementation = new ConcreteImplementationB();
   abstraction = new ExtendedAbstraction(implementation);

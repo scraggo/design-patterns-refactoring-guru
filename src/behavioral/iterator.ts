@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * Iterator Design Pattern
  *
@@ -28,9 +30,9 @@ interface Aggregator {
 }
 
 /**
-* Concrete Iterators implement various traversal algorithms. These classes
-* store the current traversal position at all times.
-*/
+ * Concrete Iterators implement various traversal algorithms. These classes
+ * store the current traversal position at all times.
+ */
 
 class AlphabeticalOrderIterator implements Iterator<string> {
   private collection: WordsCollection;
@@ -57,9 +59,7 @@ class AlphabeticalOrderIterator implements Iterator<string> {
   }
 
   public rewind() {
-    this.position = this.reverse ?
-      this.collection.getCount() - 1 :
-      0;
+    this.position = this.reverse ? this.collection.getCount() - 1 : 0;
   }
 
   public current(): string {
@@ -86,9 +86,9 @@ class AlphabeticalOrderIterator implements Iterator<string> {
 }
 
 /**
-* Concrete Collections provide one or several methods for retrieving fresh
-* iterator instances, compatible with the collection class.
-*/
+ * Concrete Collections provide one or several methods for retrieving fresh
+ * iterator instances, compatible with the collection class.
+ */
 class WordsCollection implements Aggregator {
   private items: string[] = [];
 
@@ -115,10 +115,10 @@ class WordsCollection implements Aggregator {
 
 export function main() {
   /**
-  * The client code may or may not know about the Concrete Iterator or Collection
-  * classes, depending on the level of indirection you want to keep in your
-  * program.
-  */
+   * The client code may or may not know about the Concrete Iterator or Collection
+   * classes, depending on the level of indirection you want to keep in your
+   * program.
+   */
   const collection = new WordsCollection();
   collection.addItem('First');
   collection.addItem('Second');
@@ -126,16 +126,16 @@ export function main() {
 
   const iterator = collection.getIterator();
 
-  console.log('Straight traversal:');
+  log('Straight traversal:');
   while (iterator.valid()) {
-    console.log(iterator.next());
+    log(iterator.next());
   }
 
-  console.log('');
-  console.log('Reverse traversal:');
+  log('');
+  log('Reverse traversal:');
   const reverseIterator = collection.getReverseIterator();
   while (reverseIterator.valid()) {
-    console.log(reverseIterator.next());
+    log(reverseIterator.next());
   }
 }
 

@@ -1,4 +1,3 @@
-
 export function getLogger(debugEnabled = true) {
   const logFunc: any = console.log;
 
@@ -11,6 +10,6 @@ export function getLogger(debugEnabled = true) {
   return logFunc;
 }
 
-const log = getLogger(false);
+export const log = getLogger(false);
 
 log.debug('HELLOOOOOO DEBUG');

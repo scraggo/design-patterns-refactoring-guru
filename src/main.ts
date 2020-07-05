@@ -1,10 +1,8 @@
-import { getLogger } from './utils';
+import { log } from './utils';
 
 import * as creational from './creational';
 import * as structural from './structural';
 import * as behavioral from './behavioral';
-
-const log = getLogger(false);
 
 interface Pattern {
   name: string;
@@ -19,7 +17,8 @@ interface MainArgs {
   name?: string;
 }
 
-const isMatch = (str1: string, str2: string) => str1.toLowerCase() === str2.toLowerCase();
+const isMatch = (str1: string, str2: string) =>
+  str1.toLowerCase() === str2.toLowerCase();
 
 const handlePattern = (pattern: Pattern) => {
   const { name, main } = pattern;
@@ -28,9 +27,13 @@ const handlePattern = (pattern: Pattern) => {
   log('\n---\n');
 };
 
-const handlePatterns = (type: string, patterns: PatternExport, searchTerm?: string) => {
+const handlePatterns = (
+  type: string,
+  patterns: PatternExport,
+  searchTerm?: string
+) => {
   log(`## ${type.toUpperCase()} PATTERNS\n`);
-  Object.values(patterns).forEach(pattern => {
+  Object.values(patterns).forEach((pattern) => {
     if ((searchTerm && isMatch(pattern.name, searchTerm)) || !searchTerm) {
       handlePattern(pattern);
     }

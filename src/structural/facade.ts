@@ -1,9 +1,10 @@
+import { log } from '../utils';
 
 /**
-* The Subsystem can accept requests either from the facade or client directly.
-* In any case, to the Subsystem, the Facade is yet another client, and it's not
-* a part of the Subsystem.
-*/
+ * The Subsystem can accept requests either from the facade or client directly.
+ * In any case, to the Subsystem, the Facade is yet another client, and it's not
+ * a part of the Subsystem.
+ */
 class Subsystem1 {
   public operation1(): string {
     return 'Subsystem1: Ready!\n';
@@ -17,8 +18,8 @@ class Subsystem1 {
 }
 
 /**
-* Some facades can work with multiple subsystems at the same time.
-*/
+ * Some facades can work with multiple subsystems at the same time.
+ */
 class Subsystem2 {
   public operation1(): string {
     return 'Subsystem2: Get ready!\n';
@@ -81,7 +82,7 @@ class Facade {
 function clientCode(facade: Facade) {
   // ...
 
-  console.log(facade.operation());
+  log(facade.operation());
 
   // ...
 }

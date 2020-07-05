@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The Subject interface declares common operations for both RealSubject and the
  * Proxy. As long as the client works with RealSubject using this interface,
@@ -8,20 +10,20 @@ interface Subject {
 }
 
 /**
-* The RealSubject contains some core business logic. Usually, RealSubjects are
-* capable of doing some useful work which may also be very slow or sensitive -
-* e.g. correcting input data. A Proxy can solve these issues without any
-* changes to the RealSubject's code.
-*/
+ * The RealSubject contains some core business logic. Usually, RealSubjects are
+ * capable of doing some useful work which may also be very slow or sensitive -
+ * e.g. correcting input data. A Proxy can solve these issues without any
+ * changes to the RealSubject's code.
+ */
 class RealSubject implements Subject {
   public request(): void {
-    console.log('RealSubject: Handling request.');
+    log('RealSubject: Handling request.');
   }
 }
 
 /**
-* The Proxy has an interface identical to the RealSubject.
-*/
+ * The Proxy has an interface identical to the RealSubject.
+ */
 class Proxy implements Subject {
   private realSubject: RealSubject;
 
@@ -48,13 +50,13 @@ class Proxy implements Subject {
 
   private checkAccess(): boolean {
     // Some real checks should go here.
-    console.log('Proxy: Checking access prior to firing a real request.');
+    log('Proxy: Checking access prior to firing a real request.');
 
     return true;
   }
 
   private logAccess(): void {
-    console.log('Proxy: Logging the time of request.');
+    log('Proxy: Logging the time of request.');
   }
 }
 
@@ -74,13 +76,13 @@ function clientCode(subject: Subject) {
 }
 
 export function main() {
-  console.log('Client: Executing the client code with a real subject:');
+  log('Client: Executing the client code with a real subject:');
   const realSubject = new RealSubject();
   clientCode(realSubject);
 
-  console.log('');
+  log('');
 
-  console.log('Client: Executing the same client code with a proxy:');
+  log('Client: Executing the same client code with a proxy:');
   const proxy = new Proxy(realSubject);
   clientCode(proxy);
 }

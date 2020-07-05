@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The example class that has cloning ability. We'll see how the values of field
  * with different types will be cloned.
@@ -34,8 +36,8 @@ class ComponentWithBackReference {
 }
 
 /**
-* The client code.
-*/
+ * The client code.
+ */
 export function main() {
   const p1 = new Prototype();
   p1.primitive = 245;
@@ -44,26 +46,26 @@ export function main() {
 
   const p2 = p1.clone();
   if (p1.primitive === p2.primitive) {
-    console.log('Primitive field values have been carried over to a clone. Yay!');
+    log('Primitive field values have been carried over to a clone. Yay!');
   } else {
-    console.log('Primitive field values have not been copied. Booo!');
+    log('Primitive field values have not been copied. Booo!');
   }
   if (p1.component === p2.component) {
-    console.log('Simple component has not been cloned. Booo!');
+    log('Simple component has not been cloned. Booo!');
   } else {
-    console.log('Simple component has been cloned. Yay!');
+    log('Simple component has been cloned. Yay!');
   }
 
   if (p1.circularReference === p2.circularReference) {
-    console.log('Component with back reference has not been cloned. Booo!');
+    log('Component with back reference has not been cloned. Booo!');
   } else {
-    console.log('Component with back reference has been cloned. Yay!');
+    log('Component with back reference has been cloned. Yay!');
   }
 
   if (p1.circularReference.prototype === p2.circularReference.prototype) {
-    console.log('Component with back reference is linked to original object. Booo!');
+    log('Component with back reference is linked to original object. Booo!');
   } else {
-    console.log('Component with back reference is linked to the clone. Yay!');
+    log('Component with back reference is linked to the clone. Yay!');
   }
 }
 

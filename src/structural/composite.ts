@@ -1,3 +1,5 @@
+import { log } from '../utils';
+
 /**
  * The base Component class declares common operations for both simple and
  * complex objects of a composition.
@@ -46,12 +48,12 @@ abstract class Component {
 }
 
 /**
-* The Leaf class represents the end objects of a composition. A leaf can't have
-* any children.
-*
-* Usually, it's the Leaf objects that do the actual work, whereas Composite
-* objects only delegate to their sub-components.
-*/
+ * The Leaf class represents the end objects of a composition. A leaf can't have
+ * any children.
+ *
+ * Usually, it's the Leaf objects that do the actual work, whereas Composite
+ * objects only delegate to their sub-components.
+ */
 class Leaf extends Component {
   public operation(): string {
     return 'Leaf';
@@ -66,10 +68,10 @@ class Leaf extends Component {
 }
 
 /**
-* The Composite class represents the complex components that may have children.
-* Usually, the Composite objects delegate the actual work to their children and
-* then "sum-up" the result.
-*/
+ * The Composite class represents the complex components that may have children.
+ * Usually, the Composite objects delegate the actual work to their children and
+ * then "sum-up" the result.
+ */
 class Composite extends Component {
   protected children: Component[] = [];
 
@@ -112,7 +114,7 @@ class Composite extends Component {
 function clientCode(component: Component) {
   // ...
 
-  console.log(`RESULT: ${component.operation()}`);
+  log(`RESULT: ${component.operation()}`);
 
   // ...
 }
@@ -123,7 +125,7 @@ function clientCode2(component1: Component, component2: Component) {
   if (component1.isComposite()) {
     component1.add(component2);
   }
-  console.log(`RESULT: ${component1.operation()}`);
+  log(`RESULT: ${component1.operation()}`);
 
   // ...
 }
@@ -140,16 +142,16 @@ export function main() {
    */
 
   /**
-  * This way the client code can support the simple leaf components...
-  */
+   * This way the client code can support the simple leaf components...
+   */
   const simple = new Leaf();
-  console.log('Client: I\'ve got a simple component:');
+  log("Client: I've got a simple component:");
   clientCode(simple);
-  console.log('');
+  log('');
 
   /**
-  * ...as well as the complex composites.
-  */
+   * ...as well as the complex composites.
+   */
   const tree = new Composite();
   const branch1 = new Composite();
   branch1.add(new Leaf());
@@ -158,11 +160,13 @@ export function main() {
   branch2.add(new Leaf());
   tree.add(branch1);
   tree.add(branch2);
-  console.log('Client: Now I\'ve got a composite tree:');
+  log("Client: Now I've got a composite tree:");
   clientCode(tree);
-  console.log('');
+  log('');
 
-  console.log('Client: I don\'t need to check the components classes even when managing the tree:');
+  log(
+    "Client: I don't need to check the components classes even when managing the tree:"
+  );
   clientCode2(tree, simple);
 }
 
