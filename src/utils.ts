@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 export function getLogger(debugEnabled = true) {
   const logFunc: any = console.log;
 

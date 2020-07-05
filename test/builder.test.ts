@@ -2,26 +2,28 @@ import { ConcreteBuilder1, Director } from '../src/creational/builder';
 import { expect } from 'chai';
 import sinon = require('sinon');
 
+import * as utils from '../src/utils';
+
 let builder: ConcreteBuilder1;
 let director: Director;
-let consoleSpy: sinon.SinonSpy;
-
-before(() => {
-  consoleSpy = sinon.spy(console, 'log');
-});
-
-beforeEach(() => {
-  consoleSpy.resetHistory();
-  builder = new ConcreteBuilder1();
-  director = new Director();
-  director.setBuilder(builder);
-});
-
-after(() => {
-  consoleSpy.restore();
-});
+let logStub: sinon.SinonStub;
 
 describe('Builder', () => {
+  before(() => {
+    logStub = sinon.stub(utils, 'log').returns(null);
+  });
+
+  beforeEach(() => {
+    logStub.resetHistory();
+    builder = new ConcreteBuilder1();
+    director = new Director();
+    director.setBuilder(builder);
+  });
+
+  after(() => {
+    logStub.restore();
+  });
+
   it('builds standard MVP', () => {
     director.buildMinimalViableProduct();
     const product = builder.getProduct();
@@ -31,7 +33,7 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+    expect(logStub).to.have.been.calledOnceWithExactly(
       'Product parts: PartA1\n'
     );
   });
@@ -45,7 +47,7 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+    expect(logStub).to.have.been.calledOnceWithExactly(
       'Product parts: PartA1, PartB1, PartC1\n'
     );
   });
@@ -61,7 +63,7 @@ describe('Builder', () => {
     });
 
     product.listParts();
-    expect(consoleSpy).to.have.been.calledOnceWithExactly(
+    expect(logStub).to.have.been.calledOnceWithExactly(
       'Product parts: PartA1, PartC1\n'
     );
   });
