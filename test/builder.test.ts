@@ -8,7 +8,7 @@ let builder: ConcreteBuilder1;
 let director: Director;
 let logStub: sinon.SinonStub;
 
-describe('Builder', () => {
+describe('Builder Pattern', () => {
   before(() => {
     logStub = sinon.stub(utils, 'log').returns(null);
   });

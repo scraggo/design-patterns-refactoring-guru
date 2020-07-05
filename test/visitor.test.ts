@@ -17,7 +17,7 @@ const components = [new ConcreteComponentA(), new ConcreteComponentB()];
 
 let logStub: sinon.SinonStub;
 
-describe('Visitor', () => {
+describe('Visitor Pattern', () => {
   before(() => {
     logStub = sinon.stub(utils, 'log').returns(null);
   });
