@@ -1,0 +1,191 @@
+    <section class="suite">
+      <h1>Builder Pattern</h1>
+      <dl>
+        <section class="suite">
+          <h1>without Director</h1>
+          <dl>
+            <dt>ConcreteBuilder1 calls reset() after getProduct()</dt>
+            <dd><pre><code>builder.producePartA();
+const product = builder.getProduct();
+chai_1.expect(product).to.deep.equal({
+    parts: [&#x27;PartA1&#x27;],
+});
+chai_1.expect(builder.getProduct()).to.deep.equal({
+    parts: [],
+});</code></pre></dd>
+            <dt>can build a custom project</dt>
+            <dd><pre><code>builder.producePartA();
+builder.producePartC();
+const product = builder.getProduct();
+chai_1.expect(product).to.deep.equal({
+    parts: [&#x27;PartA1&#x27;, &#x27;PartC1&#x27;],
+});
+product.listParts();
+chai_1.expect(this.logStub).to.have.been.calledOnceWithExactly(&#x27;Product parts: PartA1, PartC1\n&#x27;);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with Director</h1>
+          <dl>
+            <dt>builds Standard MVP</dt>
+            <dd><pre><code>director.buildMinimalViableProduct();
+const product = builder.getProduct();
+chai_1.expect(product).to.deep.equal({
+    parts: [&#x27;PartA1&#x27;],
+});
+product.listParts();
+chai_1.expect(this.logStub).to.have.been.calledOnceWithExactly(&#x27;Product parts: PartA1\n&#x27;);</code></pre></dd>
+            <dt>builds Standard full featured product</dt>
+            <dd><pre><code>director.buildFullFeaturedProduct();
+const product = builder.getProduct();
+chai_1.expect(product).to.deep.equal({
+    parts: [&#x27;PartA1&#x27;, &#x27;PartB1&#x27;, &#x27;PartC1&#x27;],
+});
+product.listParts();
+chai_1.expect(this.logStub).to.have.been.calledOnceWithExactly(&#x27;Product parts: PartA1, PartB1, PartC1\n&#x27;);</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>designpatterns1</h1>
+      <dl>
+        <dt>runs default command</dt>
+        <dd><pre><code>if (context.timeout)
+    this.timeout(context.timeout);
+return run.call(this);</code></pre></dd>
+        <dt>runs hello --name builder</dt>
+        <dd><pre><code>if (context.timeout)
+    this.timeout(context.timeout);
+return run.call(this);</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Iterator Pattern</h1>
+      <dl>
+        <section class="suite">
+          <h1>Collection</h1>
+          <dl>
+            <dt>getItems() works after addItem()</dt>
+            <dd><pre><code>chai_1.expect(this.words.getItems()).to.deep.equal([]);
+addFour(this.words);
+chai_1.expect(this.words.getItems()).to.deep.equal(wordsArr);</code></pre></dd>
+            <dt>getCount() works after addItems()</dt>
+            <dd><pre><code>chai_1.expect(this.words.getCount()).to.equal(0);
+addFour(this.words);
+chai_1.expect(this.words.getCount()).to.equal(4);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Iterator</h1>
+          <dl>
+            <dt>valid() is true before end of collection, false at end</dt>
+            <dd><pre><code>addFour(this.words);
+const iterator = this.words.getIterator();
+chai_1.expect(iterator.valid()).to.be.true;
+const collection = [];
+while (iterator.valid()) {
+    iterator.next();
+    collection.push(iterator.valid());
+}
+chai_1.expect(collection).to.deep.equal([true, true, true, false]);</code></pre></dd>
+            <dt>valid() is true before end of collection, false at end for reverse iterator</dt>
+            <dd><pre><code>addFour(this.words);
+const reverseIterator = this.words.getReverseIterator();
+chai_1.expect(reverseIterator.valid()).to.be.true;
+const collection = [];
+while (reverseIterator.valid()) {
+    reverseIterator.next();
+    collection.push(reverseIterator.valid());
+}
+chai_1.expect(collection).to.deep.equal([true, true, true, false]);</code></pre></dd>
+            <dt>iterates in insertion order</dt>
+            <dd><pre><code>const iterator = this.words.getIterator();
+let collection = [];
+while (iterator.valid()) {
+    collection.push(iterator.next());
+}
+chai_1.expect(collection.length).to.equal(0);
+addFour(this.words);
+collection = [];
+while (iterator.valid()) {
+    collection.push(iterator.next());
+}
+chai_1.expect(collection).to.deep.equal(wordsArr);</code></pre></dd>
+            <dt>iterates in reverse order</dt>
+            <dd><pre><code>addFour(this.words);
+const reverseIterator = this.words.getReverseIterator();
+const collection = [];
+while (reverseIterator.valid()) {
+    collection.push(reverseIterator.next());
+}
+chai_1.expect(collection).to.deep.equal(reversedWordsArr);</code></pre></dd>
+            <dt>gets current item when current() is called</dt>
+            <dd><pre><code>addFour(this.words);
+const iterator = this.words.getIterator();
+chai_1.expect(iterator.current()).to.equal(wordsArr[0]);
+iterator.next();
+chai_1.expect(iterator.current()).to.equal(wordsArr[1]);
+iterator.next();
+chai_1.expect(iterator.current()).to.equal(wordsArr[2]);
+iterator.next();
+chai_1.expect(iterator.current()).to.equal(wordsArr[3]);</code></pre></dd>
+            <dt>gets key (index) when key() is called</dt>
+            <dd><pre><code>addFour(this.words);
+const iterator = this.words.getIterator();
+chai_1.expect(iterator.key()).to.equal(0);
+iterator.next();
+chai_1.expect(iterator.key()).to.equal(1);
+iterator.next();
+chai_1.expect(iterator.key()).to.equal(2);
+iterator.next();
+chai_1.expect(iterator.key()).to.equal(3);</code></pre></dd>
+            <dt>rewind() moves position to beginning of collection</dt>
+            <dd><pre><code>addFour(this.words);
+const iterator = this.words.getIterator();
+// move to end of collection
+while (iterator.valid()) {
+    iterator.next();
+}
+chai_1.expect(iterator.valid()).to.be.false;
+iterator.rewind();
+chai_1.expect(iterator.current()).to.equal(wordsArr[0]);</code></pre></dd>
+            <dt>rewind() moves position to end of collection if reversed</dt>
+            <dd><pre><code>addFour(this.words);
+const reverseIterator = this.words.getReverseIterator();
+// move to beginning of collection
+while (reverseIterator.valid()) {
+    reverseIterator.next();
+}
+chai_1.expect(reverseIterator.valid()).to.be.false;
+reverseIterator.rewind();
+chai_1.expect(reverseIterator.current()).to.equal(wordsArr[3]);</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Visitor Pattern</h1>
+      <dl>
+        <dt>acceptVisitorForAll() accepts visitor1 for both components</dt>
+        <dd><pre><code>const visitor1 = new visitor_1.ConcreteVisitor1();
+visitor_1.acceptVisitorForAll(components, visitor1);
+chai_1.expect(this.logStub).to.have.been.calledTwice;
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 0)).to.deep.equal([
+    &#x27;A + ConcreteVisitor1&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
+    &#x27;B + ConcreteVisitor1&#x27;,
+]);</code></pre></dd>
+        <dt>acceptVisitorForAll() accepts visitor2 for both components</dt>
+        <dd><pre><code>const visitor2 = new visitor_1.ConcreteVisitor2();
+visitor_1.acceptVisitorForAll(components, visitor2);
+chai_1.expect(this.logStub).to.have.been.calledTwice;
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 0)).to.deep.equal([
+    &#x27;A + ConcreteVisitor2&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
+    &#x27;B + ConcreteVisitor2&#x27;,
+]);</code></pre></dd>
+      </dl>
+    </section>

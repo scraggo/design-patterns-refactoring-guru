@@ -1,31 +1,31 @@
-import { ConcreteBuilder1, Director } from '../src/creational/builder';
 import { expect } from 'chai';
-import sinon = require('sinon');
+// import sinon = require('sinon');
 
-import * as utils from '../src/utils';
+import { getLogStub } from '../src/utils-test';
+
+import { ConcreteBuilder1, Director } from '../src/creational/builder';
 
 let builder: ConcreteBuilder1;
 let director: Director;
-let logStub: sinon.SinonStub;
 
-describe('Builder', () => {
-  before(() => {
-    logStub = sinon.stub(utils, 'log').returns(null);
+describe('Builder Pattern', () => {
+  before(function () {
+    this.logStub = getLogStub();
   });
 
-  beforeEach(() => {
-    logStub.resetHistory();
+  beforeEach(function () {
+    this.logStub.resetHistory();
     builder = new ConcreteBuilder1();
     director = new Director();
     director.setBuilder(builder);
   });
 
-  after(() => {
-    logStub.restore();
+  after(function () {
+    this.logStub.restore();
   });
 
-  describe('without Director', () => {
-    it('ConcreteBuilder1 calls reset() after getProduct()', () => {
+  describe('without Director', function () {
+    it('ConcreteBuilder1 calls reset() after getProduct()', function () {
       builder.producePartA();
 
       const product = builder.getProduct();
@@ -38,7 +38,7 @@ describe('Builder', () => {
       });
     });
 
-    it('can build a custom project', () => {
+    it('can build a custom project', function () {
       builder.producePartA();
       builder.producePartC();
 
@@ -49,14 +49,14 @@ describe('Builder', () => {
       });
 
       product.listParts();
-      expect(logStub).to.have.been.calledOnceWithExactly(
+      expect(this.logStub).to.have.been.calledOnceWithExactly(
         'Product parts: PartA1, PartC1\n'
       );
     });
   });
 
-  describe('with Director', () => {
-    it('builds Standard MVP', () => {
+  describe('with Director', function () {
+    it('builds Standard MVP', function () {
       director.buildMinimalViableProduct();
       const product = builder.getProduct();
 
@@ -65,12 +65,12 @@ describe('Builder', () => {
       });
 
       product.listParts();
-      expect(logStub).to.have.been.calledOnceWithExactly(
+      expect(this.logStub).to.have.been.calledOnceWithExactly(
         'Product parts: PartA1\n'
       );
     });
 
-    it('builds Standard full featured product', () => {
+    it('builds Standard full featured product', function () {
       director.buildFullFeaturedProduct();
       const product = builder.getProduct();
 
@@ -79,7 +79,7 @@ describe('Builder', () => {
       });
 
       product.listParts();
-      expect(logStub).to.have.been.calledOnceWithExactly(
+      expect(this.logStub).to.have.been.calledOnceWithExactly(
         'Product parts: PartA1, PartB1, PartC1\n'
       );
     });

@@ -12,7 +12,7 @@ interface Component {
  * Each Concrete Component must implement the `accept` method in such a way that
  * it calls the visitor's method corresponding to the component's class.
  */
-class ConcreteComponentA implements Component {
+export class ConcreteComponentA implements Component {
   /*
    * Note that we're calling `visitConcreteComponentA`, which matches the
    * current class name. This way we let the visitor know the class of the
@@ -32,7 +32,7 @@ class ConcreteComponentA implements Component {
   }
 }
 
-class ConcreteComponentB implements Component {
+export class ConcreteComponentB implements Component {
   /*
    * Same here: visitConcreteComponentB => ConcreteComponentB
    */
@@ -65,7 +65,7 @@ interface Visitor {
  * might be helpful to store some intermediate state of the algorithm while
  * executing visitor's methods over various objects of the structure.
  */
-class ConcreteVisitor1 implements Visitor {
+export class ConcreteVisitor1 implements Visitor {
   public visitConcreteComponentA(element: ConcreteComponentA): void {
     log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor1`);
   }
@@ -75,7 +75,7 @@ class ConcreteVisitor1 implements Visitor {
   }
 }
 
-class ConcreteVisitor2 implements Visitor {
+export class ConcreteVisitor2 implements Visitor {
   public visitConcreteComponentA(element: ConcreteComponentA): void {
     log(`${element.exclusiveMethodOfConcreteComponentA()} + ConcreteVisitor2`);
   }
@@ -90,7 +90,7 @@ class ConcreteVisitor2 implements Visitor {
  * figuring out their concrete classes. The accept operation directs a call to
  * the appropriate operation in the visitor object.
  */
-function clientCode(components: Component[], visitor: Visitor) {
+export function acceptVisitorForAll(components: Component[], visitor: Visitor) {
   // ...
   for (const component of components) {
     component.accept(visitor);
@@ -105,14 +105,14 @@ export function main() {
     'The client code works with all visitors via the base Visitor interface:'
   );
   const visitor1 = new ConcreteVisitor1();
-  clientCode(components, visitor1);
+  acceptVisitorForAll(components, visitor1);
   log('');
 
   log(
     'It allows the same client code to work with different types of visitors:'
   );
   const visitor2 = new ConcreteVisitor2();
-  clientCode(components, visitor2);
+  acceptVisitorForAll(components, visitor2);
 }
 
 export const name = 'Visitor';

@@ -20,6 +20,8 @@
     "start": "./bin/run",
     "start-name": "./bin/run -n",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test-docs": "bash shell-tasks/docs.sh",
+    "test-watch": "mocha --watch \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
