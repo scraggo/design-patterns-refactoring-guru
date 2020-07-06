@@ -1,11 +1,6 @@
-import { WordsCollection } from '../src/behavioral/iterator';
 import { expect } from 'chai';
-import sinon = require('sinon');
 
-import * as utils from '../src/utils';
-
-let words: WordsCollection;
-let logStub: sinon.SinonStub;
+import { WordsCollection } from '../src/behavioral/iterator';
 
 const wordsArr = ['First', 'Second', 'Third', 'Fourth'];
 const reversedWordsArr = [wordsArr[3], wordsArr[2], wordsArr[1], wordsArr[0]];
@@ -17,38 +12,29 @@ const addFour = (collection: WordsCollection) => {
   collection.addItem(wordsArr[3]);
 };
 
-describe('Iterator Pattern', () => {
-  before(() => {
-    logStub = sinon.stub(utils, 'log').returns(null);
+describe('Iterator Pattern', function () {
+  beforeEach(function () {
+    this.words = new WordsCollection();
   });
 
-  beforeEach(() => {
-    logStub.resetHistory();
-    words = new WordsCollection();
-  });
-
-  after(() => {
-    logStub.restore();
-  });
-
-  describe('Collection', () => {
-    it('getItems() works after addItem()', () => {
-      expect(words.getItems()).to.deep.equal([]);
-      addFour(words);
-      expect(words.getItems()).to.deep.equal(wordsArr);
+  describe('Collection', function () {
+    it('getItems() works after addItem()', function () {
+      expect(this.words.getItems()).to.deep.equal([]);
+      addFour(this.words);
+      expect(this.words.getItems()).to.deep.equal(wordsArr);
     });
 
-    it('getCount() works after addItems()', () => {
-      expect(words.getCount()).to.equal(0);
-      addFour(words);
-      expect(words.getCount()).to.equal(4);
+    it('getCount() works after addItems()', function () {
+      expect(this.words.getCount()).to.equal(0);
+      addFour(this.words);
+      expect(this.words.getCount()).to.equal(4);
     });
   });
 
-  describe('Iterator', () => {
-    it('valid() is true before end of collection, false at end', () => {
-      addFour(words);
-      const iterator = words.getIterator();
+  describe('Iterator', function () {
+    it('valid() is true before end of collection, false at end', function () {
+      addFour(this.words);
+      const iterator = this.words.getIterator();
       expect(iterator.valid()).to.be.true;
 
       const collection: boolean[] = [];
@@ -60,9 +46,9 @@ describe('Iterator Pattern', () => {
       expect(collection).to.deep.equal([true, true, true, false]);
     });
 
-    it('valid() is true before end of collection, false at end for reverse iterator', () => {
-      addFour(words);
-      const reverseIterator = words.getReverseIterator();
+    it('valid() is true before end of collection, false at end for reverse iterator', function () {
+      addFour(this.words);
+      const reverseIterator = this.words.getReverseIterator();
       expect(reverseIterator.valid()).to.be.true;
 
       const collection: boolean[] = [];
@@ -74,8 +60,8 @@ describe('Iterator Pattern', () => {
       expect(collection).to.deep.equal([true, true, true, false]);
     });
 
-    it('iterates in insertion order', () => {
-      const iterator = words.getIterator();
+    it('iterates in insertion order', function () {
+      const iterator = this.words.getIterator();
 
       let collection: string[] = [];
       while (iterator.valid()) {
@@ -84,7 +70,7 @@ describe('Iterator Pattern', () => {
 
       expect(collection.length).to.equal(0);
 
-      addFour(words);
+      addFour(this.words);
 
       collection = [];
       while (iterator.valid()) {
@@ -94,9 +80,9 @@ describe('Iterator Pattern', () => {
       expect(collection).to.deep.equal(wordsArr);
     });
 
-    it('iterates in reverse order', () => {
-      addFour(words);
-      const reverseIterator = words.getReverseIterator();
+    it('iterates in reverse order', function () {
+      addFour(this.words);
+      const reverseIterator = this.words.getReverseIterator();
 
       const collection: string[] = [];
 
@@ -107,9 +93,9 @@ describe('Iterator Pattern', () => {
       expect(collection).to.deep.equal(reversedWordsArr);
     });
 
-    it('gets current item when current() is called', () => {
-      addFour(words);
-      const iterator = words.getIterator();
+    it('gets current item when current() is called', function () {
+      addFour(this.words);
+      const iterator = this.words.getIterator();
       expect(iterator.current()).to.equal(wordsArr[0]);
       iterator.next();
       expect(iterator.current()).to.equal(wordsArr[1]);
@@ -119,9 +105,9 @@ describe('Iterator Pattern', () => {
       expect(iterator.current()).to.equal(wordsArr[3]);
     });
 
-    it('gets key (index) when key() is called', () => {
-      addFour(words);
-      const iterator = words.getIterator();
+    it('gets key (index) when key() is called', function () {
+      addFour(this.words);
+      const iterator = this.words.getIterator();
       expect(iterator.key()).to.equal(0);
       iterator.next();
       expect(iterator.key()).to.equal(1);
@@ -131,9 +117,9 @@ describe('Iterator Pattern', () => {
       expect(iterator.key()).to.equal(3);
     });
 
-    it('rewind() moves position to beginning of collection', () => {
-      addFour(words);
-      const iterator = words.getIterator();
+    it('rewind() moves position to beginning of collection', function () {
+      addFour(this.words);
+      const iterator = this.words.getIterator();
 
       // move to end of collection
       while (iterator.valid()) {
@@ -147,9 +133,9 @@ describe('Iterator Pattern', () => {
       expect(iterator.current()).to.equal(wordsArr[0]);
     });
 
-    it('rewind() moves position to end of collection if reversed', () => {
-      addFour(words);
-      const reverseIterator = words.getReverseIterator();
+    it('rewind() moves position to end of collection if reversed', function () {
+      addFour(this.words);
+      const reverseIterator = this.words.getReverseIterator();
 
       // move to beginning of collection
       while (reverseIterator.valid()) {
