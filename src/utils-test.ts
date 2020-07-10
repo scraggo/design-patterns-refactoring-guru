@@ -7,3 +7,17 @@ export const getArgsForCall = (stub: sinon.SinonStub, call: number): any[] =>
 
 export const getLogStub = (): sinon.SinonStub =>
   sinon.stub(utils, 'log').returns(null);
+
+export const assignLogStubToTestContext = () => {
+  before(function () {
+    this.logStub = getLogStub();
+  });
+
+  beforeEach(function () {
+    this.logStub.resetHistory();
+  });
+
+  after(function () {
+    this.logStub.restore();
+  });
+};

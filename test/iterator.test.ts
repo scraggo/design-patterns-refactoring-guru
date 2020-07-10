@@ -35,7 +35,6 @@ describe('Iterator Pattern', function () {
     it('valid() is true before end of collection, false at end', function () {
       addFour(this.words);
       const iterator = this.words.getIterator();
-      expect(iterator.valid()).to.be.true;
 
       const collection: boolean[] = [];
       while (iterator.valid()) {
@@ -49,7 +48,6 @@ describe('Iterator Pattern', function () {
     it('valid() is true before end of collection, false at end for reverse iterator', function () {
       addFour(this.words);
       const reverseIterator = this.words.getReverseIterator();
-      expect(reverseIterator.valid()).to.be.true;
 
       const collection: boolean[] = [];
       while (reverseIterator.valid()) {

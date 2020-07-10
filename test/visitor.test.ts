@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 // import sinon = require('sinon');
 
-import { getArgsForCall, getLogStub } from '../src/utils-test';
+import { assignLogStubToTestContext, getArgsForCall } from '../src/utils-test';
 
 import {
   acceptVisitorForAll,
@@ -14,17 +14,7 @@ import {
 const components = [new ConcreteComponentA(), new ConcreteComponentB()];
 
 describe('Visitor Pattern', () => {
-  before(function () {
-    this.logStub = getLogStub();
-  });
-
-  beforeEach(function () {
-    this.logStub.resetHistory();
-  });
-
-  after(function () {
-    this.logStub.restore();
-  });
+  assignLogStubToTestContext();
 
   it('acceptVisitorForAll() accepts visitor1 for both components', function () {
     const visitor1 = new ConcreteVisitor1();

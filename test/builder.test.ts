@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 // import sinon = require('sinon');
 
-import { getLogStub } from '../src/utils-test';
+import { assignLogStubToTestContext } from '../src/utils-test';
 
 import { ConcreteBuilder1, Director } from '../src/creational/builder';
 
@@ -9,19 +9,12 @@ let builder: ConcreteBuilder1;
 let director: Director;
 
 describe('Builder Pattern', () => {
-  before(function () {
-    this.logStub = getLogStub();
-  });
+  assignLogStubToTestContext();
 
   beforeEach(function () {
-    this.logStub.resetHistory();
     builder = new ConcreteBuilder1();
     director = new Director();
     director.setBuilder(builder);
-  });
-
-  after(function () {
-    this.logStub.restore();
   });
 
   describe('without Director', function () {
