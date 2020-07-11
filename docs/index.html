@@ -1,3 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>design-patterns</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 8px;
+    }
+
+    header .main-title {
+      font-size: 1.5rem;
+      margin: 16px;
+      text-align: center;
+    }
+
+    header hr {
+      margin: 16px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="main-title">
+      <a href="https://github.com/scraggo/design-patterns-refactoring-guru" rel="noopener"
+        target="_blank">design-patterns-refactoring-guru on github</a>
+    </div>
+    <hr />
+  </header>
+  <main>
     <section class="suite">
       <h1>Builder Pattern</h1>
       <dl>
@@ -48,7 +82,7 @@ chai_1.expect(this.logStub).to.have.been.calledOnceWithExactly(&#x27;Product par
       </dl>
     </section>
     <section class="suite">
-      <h1>designpatterns1</h1>
+      <h1>index.ts</h1>
       <dl>
         <dt>runs default command</dt>
         <dd><pre><code>if (context.timeout)
@@ -58,6 +92,28 @@ return run.call(this);</code></pre></dd>
         <dd><pre><code>if (context.timeout)
     this.timeout(context.timeout);
 return run.call(this);</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Iterator-Visitor Combination</h1>
+      <dl>
+        <section class="suite">
+          <h1>WordsDisplayComponent</h1>
+          <dl>
+            <dt>Component.display returns empty string if nothing to display</dt>
+            <dd><pre><code>this.component.display();
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;&#x27;);</code></pre></dd>
+            <dt>Component.display returns html string of words list</dt>
+            <dd><pre><code>this.component.accept(new iterator_visitor_1.HTMLDisplayVisitor());
+this.component.display();
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x60;&#x3C;html&#x3E;&#x3C;body&#x3E;&#x3C;ul&#x3E;
+&#x3C;li&#x3E;${wordsArr[0]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[1]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[2]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[3]}&#x3C;/li&#x3E;
+&#x3C;/ul&#x3E;&#x3C;/body&#x3E;&#x3C;/html&#x3E;&#x60;);</code></pre></dd>
+          </dl>
+        </section>
       </dl>
     </section>
     <section class="suite">
@@ -82,7 +138,6 @@ chai_1.expect(this.words.getCount()).to.equal(4);</code></pre></dd>
             <dt>valid() is true before end of collection, false at end</dt>
             <dd><pre><code>addFour(this.words);
 const iterator = this.words.getIterator();
-chai_1.expect(iterator.valid()).to.be.true;
 const collection = [];
 while (iterator.valid()) {
     iterator.next();
@@ -92,7 +147,6 @@ chai_1.expect(collection).to.deep.equal([true, true, true, false]);</code></pre>
             <dt>valid() is true before end of collection, false at end for reverse iterator</dt>
             <dd><pre><code>addFour(this.words);
 const reverseIterator = this.words.getReverseIterator();
-chai_1.expect(reverseIterator.valid()).to.be.true;
 const collection = [];
 while (reverseIterator.valid()) {
     reverseIterator.next();
@@ -189,3 +243,7 @@ chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
 ]);</code></pre></dd>
       </dl>
     </section>
+</main>
+</body>
+
+</html>

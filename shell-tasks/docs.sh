@@ -1,17 +1,15 @@
 #!/bin/bash
 
 testGlob="test/**/*.test.ts"
-head="docs/head.html"
-tail="docs/tail.html"
 
-# File is created here
-docHTML="docs/test.html"
+# head/tail contain html before and after the tests
+head="src/head.html"
+tail="src/tail.html"
 
-# Create intermediate head/tail files
-touch "$head" "$tail" && \
+# final generated file
+docHTML="docs/index.html"
 
 # Create docs with "doc" reporter
+# see "$ man cat" for explanation of "-"
 mocha --reporter=doc "$testGlob" | cat "$head" - "$tail" > "$docHTML" && \
-
-# Remove intermediate head/tail files
-rm "$head" "$tail"
+echo "Created $docHTML"
