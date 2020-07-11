@@ -112,6 +112,19 @@ chai_1.expect(this.logStub).to.have.been.calledWith(&#x60;&#x3C;html&#x3E;&#x3C;
 &#x3C;li&#x3E;${wordsArr[2]}&#x3C;/li&#x3E;
 &#x3C;li&#x3E;${wordsArr[3]}&#x3C;/li&#x3E;
 &#x3C;/ul&#x3E;&#x3C;/body&#x3E;&#x3C;/html&#x3E;&#x60;);</code></pre></dd>
+            <dt>Component.display returns html string of reversed words list</dt>
+            <dd><pre><code>this.component.accept(new iterator_visitor_1.HTMLReverseDisplayVisitor());
+this.component.display();
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x60;&#x3C;html&#x3E;&#x3C;body&#x3E;&#x3C;ul&#x3E;
+&#x3C;li&#x3E;${wordsArr[3]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[2]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[1]}&#x3C;/li&#x3E;
+&#x3C;li&#x3E;${wordsArr[0]}&#x3C;/li&#x3E;
+&#x3C;/ul&#x3E;&#x3C;/body&#x3E;&#x3C;/html&#x3E;&#x60;);</code></pre></dd>
+            <dt>Component.display returns json string of words list</dt>
+            <dd><pre><code>this.component.accept(new iterator_visitor_1.JSONDisplayVisitor());
+this.component.display();
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x60;{&#x22;items&#x22;:[&#x22;${wordsArr[0]}&#x22;,&#x22;${wordsArr[1]}&#x22;,&#x22;${wordsArr[2]}&#x22;,&#x22;${wordsArr[3]}&#x22;]}&#x60;);</code></pre></dd>
           </dl>
         </section>
       </dl>

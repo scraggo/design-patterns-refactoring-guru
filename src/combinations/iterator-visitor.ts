@@ -12,33 +12,43 @@ interface Visitor {
   visitWordsDisplay(element: Component): void;
 }
 
-const getHTMLForAnyIterator = (iterator: Iterator<string>) => {
-  const html = ['<html><body><ul>'];
+const iteratorMap = (iterator: Iterator<string>, mapFn: Function): any[] => {
+  const collection = [];
 
   while (iterator.valid()) {
-    html.push(`<li>${iterator.current()}</li>`);
+    collection.push(mapFn(iterator.current()));
     iterator.next();
   }
-  html.push('</ul></body></html>');
 
-  return html.join('\n');
+  return collection;
 };
+
+const getHTMLForAnyIterator = (iterator: Iterator<string>) =>
+  ['<html><body><ul>']
+    .concat(iteratorMap(iterator, (item: string) => `<li>${item}</li>`))
+    .concat('</ul></body></html>')
+    .join('\n');
+
+const getJSONForAnyIterator = (iterator: Iterator<string>): string =>
+  JSON.stringify({
+    items: iteratorMap(iterator, (item: string) => item),
+  });
 
 export class HTMLDisplayVisitor implements Visitor {
   public visitWordsDisplay(element: Component): string {
-    // log('visitWordsCollection on WordsCollection');
-    const iterator = element.getCollection().getIterator();
-    // log('Exporting as HTML...');
-    return getHTMLForAnyIterator(iterator);
+    return getHTMLForAnyIterator(element.getCollection().getIterator());
   }
 }
 
 export class HTMLReverseDisplayVisitor implements Visitor {
   public visitWordsDisplay(element: Component): string {
-    // log('visitWordsCollection on WordsCollection');
-    const iterator = element.getCollection().getReverseIterator();
-    // log('Exporting as HTML...');
-    return getHTMLForAnyIterator(iterator);
+    return getHTMLForAnyIterator(element.getCollection().getReverseIterator());
+  }
+}
+
+export class JSONDisplayVisitor implements Visitor {
+  public visitWordsDisplay(element: Component): string {
+    return getJSONForAnyIterator(element.getCollection().getIterator());
   }
 }
 
