@@ -2,7 +2,7 @@ import { expect, test } from '@oclif/test';
 
 import cmd = require('../src');
 
-describe('designpatterns1', () => {
+describe('index.ts', () => {
   test
     .stdout()
     .do(() => cmd.run([]))

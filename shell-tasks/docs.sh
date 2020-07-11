@@ -3,8 +3,8 @@
 testGlob="test/**/*.test.ts"
 
 # head/tail contain html before and after the tests
-head="docs/head.html"
-tail="docs/tail.html"
+head="src/head.html"
+tail="src/tail.html"
 
 # final generated file
 docHTML="docs/index.html"
