@@ -165,6 +165,7 @@ export class WordsDisplayComponent implements Component {
     this.collection = collection;
   }
 
+  // public getter for word collection
   getCollection() {
     return this.collection;
   }
@@ -183,29 +184,7 @@ export class WordsDisplayComponent implements Component {
 }
 
 export function main() {
-  /**
-   * The client code may or may not know about the Concrete Iterator or Collection
-   * classes, depending on the level of indirection you want to keep in your
-   * program.
-   */
-  const collection = new WordsCollection();
-  collection.addItem('First');
-  collection.addItem('Second');
-  collection.addItem('Third');
-
-  const iterator = collection.getIterator();
-
-  log('Straight traversal:');
-  while (iterator.valid()) {
-    log(iterator.next());
-  }
-
-  log('');
-  log('Reverse traversal:');
-  const reverseIterator = collection.getReverseIterator();
-  while (reverseIterator.valid()) {
-    log(reverseIterator.next());
-  }
+  log('Iterator Visitor Combination');
 }
 
-export const name = 'Iterator';
+export const name = 'Iterator-Visitor';
