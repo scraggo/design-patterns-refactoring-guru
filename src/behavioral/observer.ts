@@ -21,7 +21,7 @@ interface Subject {
  * The Subject owns some important state and notifies observers when the state
  * changes.
  */
-class ConcreteSubject implements Subject {
+export class ConcreteSubject implements Subject {
   /**
    * @type {number} For the sake of simplicity, the Subject's state, essential
    * to all subscribers, is stored in this variable.
@@ -95,7 +95,7 @@ interface Observer {
  * Concrete Observers react to the updates issued by the Subject they had been
  * attached to.
  */
-class ConcreteObserverA implements Observer {
+export class ConcreteObserverA implements Observer {
   public update(subject: Subject): void {
     if (subject.state < 3) {
       log('ConcreteObserverA: Reacted to the event.');
@@ -103,7 +103,7 @@ class ConcreteObserverA implements Observer {
   }
 }
 
-class ConcreteObserverB implements Observer {
+export class ConcreteObserverB implements Observer {
   public update(subject: Subject): void {
     if (subject.state === 0 || subject.state >= 2) {
       log('ConcreteObserverB: Reacted to the event.');
