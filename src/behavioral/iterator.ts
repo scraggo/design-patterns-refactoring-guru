@@ -7,7 +7,7 @@ import { log } from '../utils';
  * underlying representation (list, stack, tree, etc.).
  */
 
-interface Iterator<T> {
+export interface Iterator<T> {
   // Return the current element.
   current(): T;
 
@@ -24,7 +24,7 @@ interface Iterator<T> {
   rewind(): void;
 }
 
-interface Aggregator {
+export interface Aggregator {
   // Retrieve an external iterator.
   getIterator(): Iterator<string>;
 }
@@ -34,7 +34,7 @@ interface Aggregator {
  * store the current traversal position at all times.
  */
 
-class AlphabeticalOrderIterator implements Iterator<string> {
+export class AlphabeticalOrderIterator implements Iterator<string> {
   private collection: WordsCollection;
 
   /**

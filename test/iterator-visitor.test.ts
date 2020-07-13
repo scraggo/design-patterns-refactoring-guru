@@ -5,9 +5,9 @@ import {
   HTMLDisplayVisitor,
   HTMLReverseDisplayVisitor,
   JSONDisplayVisitor,
-  WordsCollection,
   WordsDisplayComponent,
 } from '../src/combinations/iterator-visitor';
+import { WordsCollection } from '../src/behavioral/iterator';
 
 const wordsArr = ['First', 'Second', 'Third', 'Fourth'];
 // const reversedWordsArr = [wordsArr[3], wordsArr[2], wordsArr[1], wordsArr[0]];
