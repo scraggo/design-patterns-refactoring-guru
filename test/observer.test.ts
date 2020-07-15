@@ -10,26 +10,6 @@ import {
   ConcreteSubject,
 } from '../src/behavioral/observer';
 
-export function main() {
-  /**
-   * The client code.
-   */
-  const subject = new ConcreteSubject();
-
-  const observer1 = new ConcreteObserverA();
-  subject.attach(observer1);
-
-  const observer2 = new ConcreteObserverB();
-  subject.attach(observer2);
-
-  subject.someBusinessLogic();
-  subject.someBusinessLogic();
-
-  subject.detach(observer2);
-
-  subject.someBusinessLogic();
-}
-
 describe('Observer', function () {
   assignLogAndRandomStubToTestContext();
 
@@ -45,6 +25,18 @@ describe('Observer', function () {
       expect(this.logStub).to.have.been.calledOnceWithExactly(
         'Subject: Notifying observers...'
       );
+    });
+
+    it('attach() logs a failure if observer already attached', function () {
+      this.subject.attach(this.observerA);
+      this.subject.attach(this.observerA);
+      expect(this.logStub).to.have.callCount(2);
+      expect(getArgsForCall(this.logStub, 0)).to.deep.equal([
+        'Subject: Attached an observer.',
+      ]);
+      expect(getArgsForCall(this.logStub, 1)).to.deep.equal([
+        'Subject: Observer has been attached already.',
+      ]);
     });
 
     it('notify() calls one observer if attached', function () {
@@ -109,6 +101,58 @@ describe('Observer', function () {
       this.subject.detach(this.observerB);
       expect(this.logStub).to.have.been.calledWith(
         'Subject: Nonexistent observer.'
+      );
+    });
+  });
+
+  describe('ConcreteObserverA', function () {
+    it('logs on update() if component.state < 3', function () {
+      this.subject.attach(this.observerA);
+      this.subject.notify();
+      expect(this.logStub).to.have.callCount(3);
+      expect(this.logStub).to.have.been.calledWith(
+        'ConcreteObserverA: Reacted to the event.'
+      );
+    });
+
+    it('does not log on update() if component.state >= 3', function () {
+      this.subject.attach(this.observerA);
+      this.subject.someBusinessLogic();
+      this.subject.notify();
+      expect(this.logStub).not.to.have.been.calledWith(
+        'ConcreteObserverA: Reacted to the event.'
+      );
+    });
+  });
+
+  describe('ConcreteObserverB', function () {
+    it('logs on update() if component.state === 0', function () {
+      this.subject.attach(this.observerB);
+      this.subject.notify();
+      expect(this.logStub).to.have.callCount(3);
+      expect(this.logStub).to.have.been.calledWith(
+        'ConcreteObserverB: Reacted to the event.'
+      );
+    });
+
+    it('logs on update() if component.state >=2', function () {
+      this.subject.attach(this.observerB);
+      this.subject.someBusinessLogic();
+      this.subject.notify();
+      expect(this.logStub).to.have.callCount(7);
+      expect(this.logStub).to.have.been.calledWith(
+        'ConcreteObserverB: Reacted to the event.'
+      );
+    });
+
+    it('does not log on update() if component.state === 1', function () {
+      this.mathRandomStub.returns(1 / 11);
+      this.subject.attach(this.observerB);
+      this.subject.someBusinessLogic();
+      this.subject.notify();
+      expect(this.logStub).to.have.callCount(5);
+      expect(this.logStub).not.to.have.been.calledWith(
+        'ConcreteObserverB: Reacted to the event.'
       );
     });
   });
