@@ -232,6 +232,114 @@ chai_1.expect(reverseIterator.current()).to.equal(wordsArr[3]);</code></pre></dd
       </dl>
     </section>
     <section class="suite">
+      <h1>Observer</h1>
+      <dl>
+        <section class="suite">
+          <h1>ConcreteSubject</h1>
+          <dl>
+            <dt>notify() calls no observers if none set</dt>
+            <dd><pre><code>this.subject.notify();
+chai_1.expect(this.logStub).to.have.been.calledOnceWithExactly(&#x27;Subject: Notifying observers...&#x27;);</code></pre></dd>
+            <dt>attach() logs a failure if observer already attached</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.attach(this.observerA);
+chai_1.expect(this.logStub).to.have.callCount(2);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 0)).to.deep.equal([
+    &#x27;Subject: Attached an observer.&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
+    &#x27;Subject: Observer has been attached already.&#x27;,
+]);</code></pre></dd>
+            <dt>notify() calls one observer if attached</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(3);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 0)).to.deep.equal([
+    &#x27;Subject: Attached an observer.&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
+    &#x27;Subject: Notifying observers...&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 2)).to.deep.equal([
+    &#x27;ConcreteObserverA: Reacted to the event.&#x27;,
+]);</code></pre></dd>
+            <dt>notify() calls two observers if attached</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.attach(this.observerB);
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(5);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 0)).to.deep.equal([
+    &#x27;Subject: Attached an observer.&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 1)).to.deep.equal([
+    &#x27;Subject: Attached an observer.&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 2)).to.deep.equal([
+    &#x27;Subject: Notifying observers...&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 3)).to.deep.equal([
+    &#x27;ConcreteObserverA: Reacted to the event.&#x27;,
+]);
+chai_1.expect(utils_test_1.getArgsForCall(this.logStub, 4)).to.deep.equal([
+    &#x27;ConcreteObserverB: Reacted to the event.&#x27;,
+]);</code></pre></dd>
+            <dt>Changes state and notifies on someBusinessLogic()</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.someBusinessLogic();
+chai_1.expect(this.logStub).to.have.callCount(4);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x22;\nSubject: I&#x27;m doing something important.&#x22;);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;Subject: My state has just changed to: 11&#x27;);</code></pre></dd>
+            <dt>Detaches an observer</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.detach(this.observerA);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;Subject: Detached an observer.&#x27;);</code></pre></dd>
+            <dt>Logs a failure message if a non-attached observer is tried to detach</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.detach(this.observerB);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;Subject: Nonexistent observer.&#x27;);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>ConcreteObserverA</h1>
+          <dl>
+            <dt>logs on update() if component.state &#x3C; 3</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(3);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;ConcreteObserverA: Reacted to the event.&#x27;);</code></pre></dd>
+            <dt>does not log on update() if component.state &#x3E;= 3</dt>
+            <dd><pre><code>this.subject.attach(this.observerA);
+this.subject.someBusinessLogic();
+this.subject.notify();
+chai_1.expect(this.logStub).not.to.have.been.calledWith(&#x27;ConcreteObserverA: Reacted to the event.&#x27;);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>ConcreteObserverB</h1>
+          <dl>
+            <dt>logs on update() if component.state === 0</dt>
+            <dd><pre><code>this.subject.attach(this.observerB);
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(3);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;ConcreteObserverB: Reacted to the event.&#x27;);</code></pre></dd>
+            <dt>logs on update() if component.state &#x3E;=2</dt>
+            <dd><pre><code>this.subject.attach(this.observerB);
+this.subject.someBusinessLogic();
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(7);
+chai_1.expect(this.logStub).to.have.been.calledWith(&#x27;ConcreteObserverB: Reacted to the event.&#x27;);</code></pre></dd>
+            <dt>does not log on update() if component.state === 1</dt>
+            <dd><pre><code>this.mathRandomStub.returns(1 / 11);
+this.subject.attach(this.observerB);
+this.subject.someBusinessLogic();
+this.subject.notify();
+chai_1.expect(this.logStub).to.have.callCount(5);
+chai_1.expect(this.logStub).not.to.have.been.calledWith(&#x27;ConcreteObserverB: Reacted to the event.&#x27;);</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
       <h1>Visitor Pattern</h1>
       <dl>
         <dt>acceptVisitorForAll() accepts visitor1 for both components</dt>
