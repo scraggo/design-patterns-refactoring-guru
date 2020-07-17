@@ -1,0 +1,6 @@
+{
+  "[html]": {
+    // prettier automatically adds end tags, no good for head.html
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
+}
