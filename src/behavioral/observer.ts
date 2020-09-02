@@ -4,14 +4,14 @@ const INITIAL_STATE = 0;
 /**
  * The Subject interface declares a set of methods for managing subscribers.
  */
-interface Subject {
-  state: number;
+export interface Subject<T> {
+  state: T;
 
   // Attach an observer to the subject.
-  attach(observer: Observer): void;
+  attach(observer: Observer<T>): void;
 
   // Detach an observer from the subject.
-  detach(observer: Observer): void;
+  detach(observer: Observer<T>): void;
 
   // Notify all observers about an event.
   notify(): void;
@@ -21,7 +21,7 @@ interface Subject {
  * The Subject owns some important state and notifies observers when the state
  * changes.
  */
-export class ConcreteSubject implements Subject {
+export class ConcreteSubject implements Subject<number> {
   /**
    * @type {number} For the sake of simplicity, the Subject's state, essential
    * to all subscribers, is stored in this variable.
@@ -33,12 +33,12 @@ export class ConcreteSubject implements Subject {
    * subscribers can be stored more comprehensively (categorized by event
    * type, etc.).
    */
-  private observers: Observer[] = [];
+  private observers: Observer<number>[] = [];
 
   /*
    * The subscription management methods.
    */
-  public attach(observer: Observer): void {
+  public attach(observer: Observer<number>): void {
     const isExist = this.observers.includes(observer);
     if (isExist) {
       return log('Subject: Observer has been attached already.');
@@ -48,7 +48,7 @@ export class ConcreteSubject implements Subject {
     this.observers.push(observer);
   }
 
-  public detach(observer: Observer): void {
+  public detach(observer: Observer<number>): void {
     const observerIndex = this.observers.indexOf(observer);
     if (observerIndex === -1) {
       return log('Subject: Nonexistent observer.');
@@ -86,25 +86,25 @@ export class ConcreteSubject implements Subject {
 /**
  * The Observer interface declares the update method, used by subjects.
  */
-interface Observer {
+export interface Observer<T> {
   // Receive update from subject.
-  update(subject: Subject): void;
+  update(subject: Subject<T>): void;
 }
 
 /**
  * Concrete Observers react to the updates issued by the Subject they had been
  * attached to.
  */
-export class ConcreteObserverA implements Observer {
-  public update(subject: Subject): void {
+export class ConcreteObserverA implements Observer<number> {
+  public update(subject: Subject<number>): void {
     if (subject.state < 3) {
       log('ConcreteObserverA: Reacted to the event.');
     }
   }
 }
 
-export class ConcreteObserverB implements Observer {
-  public update(subject: Subject): void {
+export class ConcreteObserverB implements Observer<number> {
+  public update(subject: Subject<number>): void {
     if (subject.state === 0 || subject.state >= 2) {
       log('ConcreteObserverB: Reacted to the event.');
     }
