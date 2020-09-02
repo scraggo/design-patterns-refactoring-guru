@@ -11,7 +11,11 @@ const INITIAL_STATE: StateInterface = {
   event: 'init',
 };
 
-const COMPANY_LEVELS = ['boss', 'department', 'employee'];
+enum CompanyLevel {
+  'boss' = 'boss',
+  'department' = 'department',
+  'employee' = 'employee',
+}
 
 /**
  * The Subject owns some important state and notifies observers when the state
@@ -66,10 +70,9 @@ export class NotificationSystem implements Subject<StateInterface> {
    * really do. Subjects commonly hold some important business logic, that
    * triggers a notification method whenever something important is about to
    * happen (or after it).
-   * @param {number} idx of COMPANY_LEVELS array
+   * @param {CompanyLevel} level CompanyLevel
    */
-  public someBusinessLogic(idx: number): void {
-    const level = COMPANY_LEVELS[idx % COMPANY_LEVELS.length];
+  public someBusinessLogic(level: CompanyLevel): void {
     this.state = {
       data: `${level}_message`,
       event: level,
@@ -137,7 +140,7 @@ class Composite extends Component {
     return true;
   }
 
-  update(subject: Subject<StateInterface>) {
+  public update(subject: Subject<StateInterface>) {
     const { event } = subject.state;
 
     if (this.companyLevel === event) {
@@ -178,9 +181,9 @@ export function main() {
 
   notifications.attach(boss);
 
-  notifications.someBusinessLogic(0);
-  notifications.someBusinessLogic(1);
-  notifications.someBusinessLogic(2);
+  notifications.someBusinessLogic(CompanyLevel.boss);
+  notifications.someBusinessLogic(CompanyLevel.department);
+  notifications.someBusinessLogic(CompanyLevel.employee);
 }
 
 export const name = 'Composite Observer';
