@@ -51,6 +51,14 @@ export class MIDIBass implements Instrument {
   }
 }
 
+export class MIDIDrums implements Instrument {
+  public handleEventInput(event: string): string {
+    event += 'patch:100';
+    // use native player on event
+    return event;
+  }
+}
+
 // this one doesn't use the same MIDI capabilities
 export class DrumMachine implements Instrument {
   public eventList: string[] = [];
@@ -60,18 +68,39 @@ export class DrumMachine implements Instrument {
   }
 }
 
-export function main() {
-  const musicEditor: SoftwareInstrumentTrack[] = [];
-  const guitar = new MIDIGuitar();
-  const bass = new MIDIBass();
-  const drums = new DrumMachine();
+// this is the "AbstractFactory" pattern
+// return native instruments by default
+class TrackFactory {
+  public createGuitarTrack(): SoftwareInstrumentTrack {
+    return new NativeMIDITrack(new MIDIGuitar());
+  }
 
-  // this will be abstract factory
-  musicEditor.push(new NativeMIDITrack(guitar));
-  musicEditor.push(new NativeMIDITrack(bass));
-  musicEditor.push(new ThirdPartyMIDITrack(drums));
+  public createBassTrack(): SoftwareInstrumentTrack {
+    return new NativeMIDITrack(new MIDIBass());
+  }
+
+  public createDrumsTrack(): SoftwareInstrumentTrack {
+    return new NativeMIDITrack(new MIDIDrums());
+  }
+}
+
+export class NativeInstrumentFactory extends TrackFactory { }
+export class TranceInstrumentsFactory extends TrackFactory {
+  public createDrumsTrack() {
+    return new ThirdPartyMIDITrack(new DrumMachine());
+  }
+}
+
+export function main() {
+  const nativeFactory = new NativeInstrumentFactory();
+  const tranceFactory = new TranceInstrumentsFactory();
+  const musicEditor: SoftwareInstrumentTrack[] = [];
+
+  musicEditor.push(nativeFactory.createGuitarTrack());
+  musicEditor.push(nativeFactory.createBassTrack());
+  musicEditor.push(tranceFactory.createDrumsTrack());
 
   musicEditor[0].addEvent('pitch:99,length:10');
 }
 
-export const name = 'Bridge';
+export const name = 'Abstract Factory and Bridge';
