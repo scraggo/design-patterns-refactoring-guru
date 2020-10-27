@@ -3,6 +3,7 @@ import { log } from '../utils';
 /**
  * The Component interface declares an `accept` method that should take the base
  * visitor interface as an argument.
+ * aka "Element"
  */
 interface Component {
   accept(visitor: Visitor): void;

@@ -11,7 +11,7 @@ const INITIAL_STATE: StateInterface = {
   event: 'init',
 };
 
-enum CompanyLevel {
+export enum CompanyLevel {
   'boss' = 'boss',
   'department' = 'department',
   'employee' = 'employee',
@@ -107,7 +107,7 @@ abstract class Component implements Observer<StateInterface> {
   }
 }
 
-class Leaf extends Component {
+export class Leaf extends Component {
   public operation(): string {
     return 'Leaf';
   }
@@ -124,7 +124,7 @@ class Leaf extends Component {
   }
 }
 
-class Composite extends Component {
+export class Composite extends Component {
   protected children: Component[] = [];
 
   public add(component: Component): void {
@@ -162,9 +162,7 @@ class Composite extends Component {
   }
 }
 
-export function main() {
-  const notifications = new NotificationSystem();
-
+export function createCompany() {
   // make "company" with "dev" and "revenue" teams
   const boss = new Composite('boss');
   const dev = new Composite('dev');
@@ -179,6 +177,13 @@ export function main() {
   boss.add(dev);
   boss.add(revenue);
 
+  return boss;
+}
+
+export function main() {
+  const notifications = new NotificationSystem();
+
+  const boss = createCompany();
   notifications.attach(boss);
 
   notifications.someBusinessLogic(CompanyLevel.boss);
