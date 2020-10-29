@@ -6,6 +6,13 @@ interface ImageShared {
   size: number;
 }
 
+interface ImageUnique {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+}
+
 interface Image extends ImageShared {
   height: number;
   width: number;
@@ -24,10 +31,9 @@ class ImageFlyweight {
     this.sharedState = sharedState;
   }
 
-  public operation(uniqueState: any): string {
-    const s = JSON.stringify(this.sharedState);
-    const u = JSON.stringify(uniqueState);
-    return `Flyweight: Displaying shared (${s}) and unique (${u}) state.`;
+  public toHTML(uniqueState: ImageUnique): string {
+    const { height, width, x, y } = uniqueState;
+    return `<img height=${height} width=${width} left=${x} top=${y} />`;
   }
 }
 
@@ -81,6 +87,27 @@ class ImageFlyweightFactory {
   }
 }
 
+class Slide {
+  images: string[] = [];
+  imageFactory: ImageFlyweightFactory;
+  text: string[] = [];
+
+  constructor(imageFactory: ImageFlyweightFactory) {
+    this.imageFactory = imageFactory;
+  }
+
+  // -> user selects existing image. can duplicate and change coordinates
+  addImageToSlide(userImageSelection: Image) {
+    const { height, width, x, y } = userImageSelection;
+    const image = this.imageFactory.getFlyweight(userImageSelection);
+    this.images.push(image.toHTML({ height, width, x, y }));
+  }
+
+  render() {
+    // print images and text blocks
+  }
+}
+
 export function main() {
   const factory = new ImageFlyweightFactory([
     { data: '101010', name: 'butterfly', size: 1000 },
@@ -90,12 +117,6 @@ export function main() {
   ]);
   factory.listFlyweights();
 
-  function addImageToDatabase(ff: ImageFlyweightFactory, imageDetails: Image) {
-    const { data, name, size, height, width, x, y } = imageDetails;
-    const flyweight = ff.getFlyweight({ data, name, size });
-    return flyweight.operation({ height, width, x, y });
-  }
-
   const defaultUniqueProperties = {
     height: 100,
     width: 100,
@@ -103,16 +124,17 @@ export function main() {
     y: 0,
   };
 
-  addImageToDatabase(factory, {
+  const slide1 = new Slide(factory);
+  slide1.addImageToSlide({
     data: '101010', name: 'butterfly', size: 1000,
     ...defaultUniqueProperties,
   });
-  addImageToDatabase(factory, {
+  slide1.addImageToSlide({
     data: '101010', name: 'butterfly', size: 1000,
     ...defaultUniqueProperties,
+    x: 100,
   });
-
-  factory.listFlyweights();
+  slide1.render();
 }
 
-export const name = 'Flyweight';
+export const name = 'Flyweight Memento';
