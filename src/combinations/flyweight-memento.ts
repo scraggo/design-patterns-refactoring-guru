@@ -20,8 +20,41 @@ interface Image extends ImageShared {
   y: number;
 }
 
+interface SlideImage {
+  raw: Image;
+  html: string;
+}
+
 interface ImageFlyweights {
   [key: string]: ImageFlyweight;
+}
+
+interface Memento {
+  getState(): string;
+  getName(): string;
+  getDate(): string;
+}
+
+class ConcreteMemento implements Memento {
+  private state: any;
+  private date: string;
+
+  constructor(state: any) {
+    this.state = state;
+    this.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  }
+
+  public getState(): string {
+    return this.state;
+  }
+
+  public getName(): string {
+    return `${this.date} / (${JSON.stringify(this.state).substr(0, 9)}...)`;
+  }
+
+  public getDate(): string {
+    return this.date;
+  }
 }
 
 class ImageFlyweight {
@@ -87,8 +120,15 @@ class ImageFlyweightFactory {
   }
 }
 
+/*
+class Slide (Originator)
+  getState() -> grab all extrinsicData values, combine with flyweights?
+      recombining/restoring - factory.getFlyweight(name)
+  save() -> return new ConcreteMemento(this.getState)
+  restore(memento: Memento): { this.state = memento.getState(); }
+*/
 class Slide {
-  images: string[] = [];
+  images: SlideImage[] = [];
   imageFactory: ImageFlyweightFactory;
   text: string[] = [];
 
@@ -100,11 +140,56 @@ class Slide {
   addImageToSlide(userImageSelection: Image) {
     const { height, width, x, y } = userImageSelection;
     const image = this.imageFactory.getFlyweight(userImageSelection);
-    this.images.push(image.toHTML({ height, width, x, y }));
+    this.images.push({ raw: userImageSelection, html: image.toHTML({ height, width, x, y }) });
   }
 
   render() {
     // print images and text blocks
+  }
+
+  public save(): Memento {
+    return new ConcreteMemento({ images: this.images, text: this.text });
+  }
+
+  public restore(memento: Memento): void {
+    const state = memento.getState();
+    log(`Originator: My state has changed to: ${JSON.stringify(state)}`);
+  }
+}
+
+// class History (Caretaker) // handle stack of mementos
+// calls Slide’s backup related methods
+class History {
+  private mementos: Memento[] = [];
+
+  private originator: Slide;
+
+  constructor(originator: Slide) {
+    this.originator = originator;
+  }
+
+  public backup(): void {
+    log("\nCaretaker: Saving Originator's state...");
+    this.mementos.push(this.originator.save());
+  }
+
+  public undo(): void {
+    if (this.mementos.length === 0) {
+      log('Caretaker: Nothing left to undo.');
+      return;
+    }
+
+    const memento = this.mementos.pop() as Memento;
+
+    log(`Caretaker: Restoring state to: ${memento.getName()}`);
+    this.originator.restore(memento);
+  }
+
+  public showHistory(): void {
+    log("Caretaker: Here's the list of mementos:");
+    for (const memento of this.mementos) {
+      log(memento.getName());
+    }
   }
 }
 
@@ -125,6 +210,9 @@ export function main() {
   };
 
   const slide1 = new Slide(factory);
+  const slide1History = new History(slide1);
+  slide1.save();
+  slide1History.showHistory();
   slide1.addImageToSlide({
     data: '101010', name: 'butterfly', size: 1000,
     ...defaultUniqueProperties,
