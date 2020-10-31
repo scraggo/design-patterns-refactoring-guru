@@ -30,21 +30,26 @@ interface ImageFlyweights {
 }
 
 interface Memento {
-  getState(): string;
+  getState(): object;
   getName(): string;
   getDate(): string;
 }
 
+interface SlideMemento {
+  images: SlideImage[];
+  text: string[];
+}
+
 class ConcreteMemento implements Memento {
-  private state: any;
+  private state: object;
   private date: string;
 
-  constructor(state: any) {
+  constructor(state: object) {
     this.state = state;
     this.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
   }
 
-  public getState(): string {
+  public getState(): object {
     return this.state;
   }
 
@@ -70,12 +75,6 @@ class ImageFlyweight {
   }
 }
 
-/**
- * The Flyweight Factory creates and manages the Flyweight objects. It ensures
- * that flyweights are shared correctly. When the client requests a flyweight,
- * the factory either returns an existing instance or creates a new one, if it
- * doesn't exist yet.
- */
 class ImageFlyweightFactory {
   // private flyweights: { [key: string]: Flyweight; } = <any>{};
   private flyweights: ImageFlyweights = {};
@@ -86,17 +85,11 @@ class ImageFlyweightFactory {
     });
   }
 
-  /*
-   * Returns a Flyweight's string hash for a given state.
-   */
   private getKey(state: ImageShared): string {
     const { name, size } = state;
     return [name, size].join('_');
   }
 
-  /*
-   * Returns an existing Flyweight with a given state or creates a new one.
-   */
   public getFlyweight(sharedState: ImageShared): ImageFlyweight {
     const key = this.getKey(sharedState);
 
@@ -128,8 +121,8 @@ class Slide (Originator)
   restore(memento: Memento): { this.state = memento.getState(); }
 */
 class Slide {
-  images: SlideImage[] = [];
   imageFactory: ImageFlyweightFactory;
+  images: SlideImage[] = [];
   text: string[] = [];
 
   constructor(imageFactory: ImageFlyweightFactory) {
@@ -140,11 +133,16 @@ class Slide {
   addImageToSlide(userImageSelection: Image) {
     const { height, width, x, y } = userImageSelection;
     const image = this.imageFactory.getFlyweight(userImageSelection);
-    this.images.push({ raw: userImageSelection, html: image.toHTML({ height, width, x, y }) });
+    this.images.push({
+      raw: userImageSelection,
+      html: image.toHTML({ height, width, x, y }),
+    });
   }
 
   render() {
     // print images and text blocks
+    log(JSON.stringify(this.images));
+    log(JSON.stringify(this.text));
   }
 
   public save(): Memento {
@@ -152,8 +150,9 @@ class Slide {
   }
 
   public restore(memento: Memento): void {
-    const state = memento.getState();
-    log(`Originator: My state has changed to: ${JSON.stringify(state)}`);
+    const { images, text } = memento.getState() as SlideMemento;
+    this.images = images;
+    this.text = text;
   }
 }
 
@@ -169,24 +168,19 @@ class History {
   }
 
   public backup(): void {
-    log("\nCaretaker: Saving Originator's state...");
     this.mementos.push(this.originator.save());
   }
 
   public undo(): void {
     if (this.mementos.length === 0) {
-      log('Caretaker: Nothing left to undo.');
       return;
     }
 
     const memento = this.mementos.pop() as Memento;
-
-    log(`Caretaker: Restoring state to: ${memento.getName()}`);
     this.originator.restore(memento);
   }
 
   public showHistory(): void {
-    log("Caretaker: Here's the list of mementos:");
     for (const memento of this.mementos) {
       log(memento.getName());
     }
@@ -214,11 +208,15 @@ export function main() {
   slide1.save();
   slide1History.showHistory();
   slide1.addImageToSlide({
-    data: '101010', name: 'butterfly', size: 1000,
+    data: '101010',
+    name: 'butterfly',
+    size: 1000,
     ...defaultUniqueProperties,
   });
   slide1.addImageToSlide({
-    data: '101010', name: 'butterfly', size: 1000,
+    data: '101010',
+    name: 'butterfly',
+    size: 1000,
     ...defaultUniqueProperties,
     x: 100,
   });
