@@ -5,7 +5,7 @@ import { log } from '../utils';
  * hierarchies. It maintains a reference to an object of the Implementation
  * hierarchy and delegates all of the real work to this object.
  */
-class Abstraction {
+export class Abstraction {
   protected implementation: Implementation;
 
   constructor(implementation: Implementation) {
@@ -21,7 +21,7 @@ class Abstraction {
 /**
  * You can extend the Abstraction without changing the Implementation classes.
  */
-class ExtendedAbstraction extends Abstraction {
+export class ExtendedAbstraction extends Abstraction {
   public operation(): string {
     const result = this.implementation.operationImplementation();
     return `ExtendedAbstraction: Extended operation with:\n${result}`;
@@ -35,7 +35,7 @@ class ExtendedAbstraction extends Abstraction {
  * provides only primitive operations, while the Abstraction defines higher-
  * level operations based on those primitives.
  */
-interface Implementation {
+export interface Implementation {
   operationImplementation(): string;
 }
 
@@ -43,13 +43,13 @@ interface Implementation {
  * Each Concrete Implementation corresponds to a specific platform and
  * implements the Implementation interface using that platform's API.
  */
-class ConcreteImplementationA implements Implementation {
+export class ConcreteImplementationA implements Implementation {
   public operationImplementation(): string {
     return 'ConcreteImplementationA: Here\'s the result on the platform A.';
   }
 }
 
-class ConcreteImplementationB implements Implementation {
+export class ConcreteImplementationB implements Implementation {
   public operationImplementation(): string {
     return 'ConcreteImplementationB: Here\'s the result on the platform B.';
   }
@@ -64,7 +64,9 @@ class ConcreteImplementationB implements Implementation {
 function clientCode(abstraction: Abstraction) {
   // ..
 
-  log(abstraction.operation());
+  const result = abstraction.operation();
+  log(result);
+  return result;
 
   // ..
 }
@@ -77,8 +79,6 @@ export function main() {
   let implementation = new ConcreteImplementationA();
   let abstraction = new Abstraction(implementation);
   clientCode(abstraction);
-
-  log('');
 
   implementation = new ConcreteImplementationB();
   abstraction = new ExtendedAbstraction(implementation);
