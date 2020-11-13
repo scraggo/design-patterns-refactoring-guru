@@ -3,7 +3,6 @@ import { log } from '../utils';
 interface ImageShared {
   data: string;
   name: string;
-  size: number;
 }
 
 interface ImageUnique {
@@ -13,12 +12,8 @@ interface ImageUnique {
   y: number;
 }
 
-interface Image extends ImageShared {
-  height: number;
-  width: number;
-  x: number;
-  y: number;
-}
+// what about ImageFlyweight?
+interface Image extends ImageShared, ImageUnique { }
 
 interface SlideImage {
   raw: Image;
@@ -29,6 +24,11 @@ interface ImageFlyweights {
   [key: string]: ImageFlyweight;
 }
 
+interface AppHistory {
+  [key: string]: History;
+}
+
+// think through this more
 interface Memento {
   getState(): object;
   getName(): string;
@@ -40,6 +40,7 @@ interface SlideMemento {
   text: string[];
 }
 
+// should probably make an ImageMemento and a TextMemento
 class ConcreteMemento implements Memento {
   private state: object;
   private date: string;
@@ -62,6 +63,7 @@ class ConcreteMemento implements Memento {
   }
 }
 
+// this isn't quite right, should be more like Context
 class ImageFlyweight {
   private sharedState: ImageShared;
 
@@ -70,8 +72,9 @@ class ImageFlyweight {
   }
 
   public toHTML(uniqueState: ImageUnique): string {
+    const data = this.sharedState.data;
     const { height, width, x, y } = uniqueState;
-    return `<img height=${height} width=${width} left=${x} top=${y} />`;
+    return `<img src=${data} height=${height} width=${width} left=${x} top=${y} />`;
   }
 }
 
@@ -86,8 +89,7 @@ class ImageFlyweightFactory {
   }
 
   private getKey(state: ImageShared): string {
-    const { name, size } = state;
-    return [name, size].join('_');
+    return state.name;
   }
 
   public getFlyweight(sharedState: ImageShared): ImageFlyweight {
@@ -130,11 +132,12 @@ class Slide {
   }
 
   // -> user selects existing image. can duplicate and change coordinates
-  addImageToSlide(userImageSelection: Image) {
-    const { height, width, x, y } = userImageSelection;
-    const image = this.imageFactory.getFlyweight(userImageSelection);
+  addImageToSlide(imageShared: ImageShared, imageUnique: ImageUnique) {
+    const { height, width, x, y } = imageUnique;
+    const image = this.imageFactory.getFlyweight(imageShared);
     this.images.push({
-      raw: userImageSelection,
+      raw: image, // this is what's stored in history, better make it good!
+      image,
       html: image.toHTML({ height, width, x, y }),
     });
   }
@@ -188,10 +191,16 @@ class History {
 }
 
 export function main() {
+  // default images
+  const butterflyImage: ImageShared = { data: '101010', name: 'butterfly' };
+  const flowerImage: ImageShared = { data: '101001', name: 'flower' };
+  const sunImage: ImageShared = { data: '101101', name: 'sun' };
+
+  // add default images
   const factory = new ImageFlyweightFactory([
-    { data: '101010', name: 'butterfly', size: 1000 },
-    { data: '101001', name: 'flower', size: 1001 },
-    { data: '101101', name: 'sun', size: 1002 },
+    butterflyImage,
+    flowerImage,
+    sunImage,
     // ...
   ]);
   factory.listFlyweights();
@@ -204,19 +213,15 @@ export function main() {
   };
 
   const slide1 = new Slide(factory);
-  const slide1History = new History(slide1);
+
+  const appHistory: AppHistory = {
+    slide1: new History(slide1),
+  };
+
   slide1.save();
-  slide1History.showHistory();
-  slide1.addImageToSlide({
-    data: '101010',
-    name: 'butterfly',
-    size: 1000,
-    ...defaultUniqueProperties,
-  });
-  slide1.addImageToSlide({
-    data: '101010',
-    name: 'butterfly',
-    size: 1000,
+  appHistory.slide1.showHistory();
+  slide1.addImageToSlide(butterflyImage, defaultUniqueProperties);
+  slide1.addImageToSlide(butterflyImage, {
     ...defaultUniqueProperties,
     x: 100,
   });
