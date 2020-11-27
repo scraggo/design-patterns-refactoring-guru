@@ -72,8 +72,9 @@ class ImageFlyweight {
   }
 
   public toHTML(uniqueState: ImageUnique): string {
+    const data = this.sharedState.data;
     const { height, width, x, y } = uniqueState;
-    return `<img height=${height} width=${width} left=${x} top=${y} />`;
+    return `<img src=${data} height=${height} width=${width} left=${x} top=${y} />`;
   }
 }
 
@@ -135,7 +136,8 @@ class Slide {
     const { height, width, x, y } = imageUnique;
     const image = this.imageFactory.getFlyweight(imageShared);
     this.images.push({
-      raw: userImageSelection, // this is what's stored in history, better make it good!
+      raw: image, // this is what's stored in history, better make it good!
+      image,
       html: image.toHTML({ height, width, x, y }),
     });
   }
