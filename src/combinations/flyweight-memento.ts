@@ -1,11 +1,11 @@
 import { log } from '../utils';
 
-interface ImageShared {
+export interface ImageShared {
   data: string;
   name: string;
 }
 
-interface ImageUnique {
+export interface ImageUnique {
   height: number;
   width: number;
   x: number;
@@ -15,47 +15,57 @@ interface ImageUnique {
 // what about ImageFlyweight?
 // interface Image extends ImageShared, ImageUnique {}
 
-// interface SlideImage {
-//   raw: Image;
-//   html: string;
-// }
+export interface ImageBackupState {
+  sharedState: ImageShared;
+  uniqueState: ImageUnique;
+}
 
-interface ImageFlyweights {
+export interface ImageFlyweights {
   [key: string]: ImageShared;
 }
 
-interface AppHistory {
+export interface AppHistory {
   [key: string]: History;
 }
 
 // think through this more
-interface Memento {
+export interface Memento {
   getState(): object;
   getName(): string;
   getDate(): string;
 }
 
-interface SlideMemento {
-  images: Image[];
+export interface SlideMemento {
+  images: ImageBackupState[];
   text: string[];
 }
 
 // should probably make an ImageMemento and a TextMemento
+// private
 class ConcreteMemento implements Memento {
-  private state: object;
+  private state: SlideMemento;
   private date: string;
 
-  constructor(state: object) {
+  constructor(state: SlideMemento) {
     this.state = state;
     this.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
   }
 
-  public getState(): object {
+  public getState(): SlideMemento {
     return this.state;
   }
 
   public getName(): string {
-    return `${this.date} / (${JSON.stringify(this.state).substr(0, 100)}...)`;
+    const { images, text } = this.state;
+    const imagesAsString = images
+      .map(
+        (image) =>
+          `${image.sharedState.name} - ${JSON.stringify(image.uniqueState)}`
+      )
+      .join(', ');
+    return `${this.date} / text: ${text.join(
+      ', '
+    )} / images: ${imagesAsString}`;
   }
 
   public getDate(): string {
@@ -63,7 +73,7 @@ class ConcreteMemento implements Memento {
   }
 }
 
-// replace ImageFlyweight
+// private
 class Image {
   private sharedState: ImageShared;
   private uniqueState: ImageUnique;
@@ -77,14 +87,22 @@ class Image {
     this.uniqueState = uniqueState;
   }
 
+  public toBackupState(): ImageBackupState {
+    return {
+      sharedState: this.sharedState,
+      uniqueState: this.uniqueState,
+    };
+  }
+
   public toHTML(): string {
-    const { data } = this.sharedState;
+    const { data, name } = this.sharedState;
     const { height, width, x, y } = this.uniqueState;
-    return `<img src=${data} height=${height} width=${width} left=${x} top=${y} />`;
+    return `<img alt=${name} src=${data} height=${height} width=${width} left=${x} top=${y} />`;
   }
 }
 
-class ImageFlyweightFactory {
+// public
+export class ImageFlyweightFactory {
   // private flyweights: { [key: string]: Flyweight; } = <any>{};
   private flyweights: ImageFlyweights = {};
 
@@ -112,12 +130,8 @@ class ImageFlyweightFactory {
   }
 
   public listFlyweights(): void {
-    const count = Object.keys(this.flyweights).length;
-    log(`\nFlyweightFactory: I have ${count} flyweights:`);
-
-    Object.keys(this.flyweights).forEach((key) => {
-      log(key);
-    });
+    const keys = Object.keys(this.flyweights);
+    log(`length: ${keys.length} - ${keys}`);
   }
 }
 
@@ -128,10 +142,12 @@ class Slide (Originator)
   save() -> return new ConcreteMemento(this.getState)
   restore(memento: Memento): { this.state = memento.getState(); }
 */
-class Slide {
-  imageFactory: ImageFlyweightFactory;
-  images: Image[] = [];
-  text: string[] = [];
+// public
+export class Slide {
+  private imageFactory: ImageFlyweightFactory;
+  private images: Image[] = [];
+  private text: string[] = [];
+  public title = 'Slide 1';
 
   constructor(imageFactory: ImageFlyweightFactory) {
     this.imageFactory = imageFactory;
@@ -147,32 +163,37 @@ class Slide {
     this.text.push(text);
   }
 
-  // print images and text blocks
+  // simple html render
   render() {
-    log(
-      'images',
-      this.images.map((image) => image.toHTML())
-    );
-    log(
-      'text',
-      this.text.map((line) => `<div>${line}</div>`)
-    );
+    const logSep = () => log('-'.repeat(79));
+    logSep();
+    log(`<h1>${this.title}</h1>`);
+    log(this.text.map((line) => `<div>${line}</div>`).join('\n'));
+    log(this.images.map((image) => image.toHTML()).join('\n'));
+    logSep();
   }
 
   public save(): Memento {
-    return new ConcreteMemento({ images: this.images, text: this.text });
+    return new ConcreteMemento({
+      images: this.images.map((image) => image.toBackupState()),
+      text: this.text,
+    });
   }
 
   public restore(memento: Memento): void {
     const { images, text } = memento.getState() as SlideMemento;
-    this.images = images;
+    this.images = images.map((image) => {
+      const imageFlyweight = this.imageFactory.getFlyweight(image.sharedState);
+      return new Image(imageFlyweight, image.uniqueState);
+    });
     this.text = text;
   }
 }
 
 // class History (Caretaker) // handle stack of mementos
 // calls Slide’s backup related methods
-class History {
+// public
+export class History {
   private mementos: Memento[] = [];
 
   private originator: Slide;
@@ -182,16 +203,22 @@ class History {
   }
 
   public backup(): void {
+    // log('Backing up state...');
+    const state = this.originator.save();
+    console.log(state);
     this.mementos.push(this.originator.save());
   }
 
   public undo(): void {
+    log('Attempting undo...');
     if (this.mementos.length === 0) {
+      log('Nothing to undo.');
       return;
     }
 
     const memento = this.mementos.pop() as Memento;
     this.originator.restore(memento);
+    log('Undo complete.', memento);
   }
 
   public showHistory(): void {
@@ -237,6 +264,15 @@ export function main() {
   slide1.render();
   appHistory.slide1.backup();
   appHistory.slide1.showHistory();
+  slide1.addText('Butterflies');
+  slide1.render();
+  appHistory.slide1.backup();
+  appHistory.slide1.showHistory();
+  // slide1.render();
+  // slide1.addText('Butterflies');
+  appHistory.slide1.undo();
+  appHistory.slide1.showHistory();
+  slide1.render();
 }
 
 export const name = 'Flyweight Memento';
