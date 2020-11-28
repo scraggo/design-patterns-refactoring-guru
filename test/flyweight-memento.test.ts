@@ -142,11 +142,11 @@ describe.only('Flyweight-memento Combination', function () {
       this.slide.addImage(butterflyImage, defaultUniqueProperties);
       this.history.backup();
       this.history.showHistory();
-      const calls = getArgsForCall(this.logStub, 0);
-      console.log(calls[0]);
-      expect(calls).to.have.length(1);
-      expect(calls[0]).to.include('text: hi');
-      expect(calls[0]).to.include(
+      const args0 = getArgsForCall(this.logStub, 0);
+      const args1 = getArgsForCall(this.logStub, 1);
+      expect(args0[0]).to.equal('History: 2 actions');
+      expect(args1[0]).to.include('text: hi');
+      expect(args1[0]).to.include(
         'images: butterfly - {"height":100,"width":100,"x":0,"y":0}'
       );
     });

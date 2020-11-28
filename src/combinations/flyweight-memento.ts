@@ -205,8 +205,7 @@ export class History {
   public backup(): void {
     // log('Backing up state...');
     const state = this.originator.save();
-    console.log(state);
-    this.mementos.push(this.originator.save());
+    this.mementos.push(state);
   }
 
   public undo(): void {
@@ -222,9 +221,8 @@ export class History {
   }
 
   public showHistory(): void {
-    for (const memento of this.mementos) {
-      log(memento.getName());
-    }
+    log(`History: ${this.mementos.length} actions`);
+    log(this.mementos.map((memento) => memento.getName()).join('\n'));
   }
 }
 
