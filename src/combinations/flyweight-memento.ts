@@ -13,15 +13,15 @@ interface ImageUnique {
 }
 
 // what about ImageFlyweight?
-interface Image extends ImageShared, ImageUnique {}
+// interface Image extends ImageShared, ImageUnique {}
 
-interface SlideImage {
-  raw: Image;
-  html: string;
-}
+// interface SlideImage {
+//   raw: Image;
+//   html: string;
+// }
 
 interface ImageFlyweights {
-  [key: string]: ImageFlyweight;
+  [key: string]: ImageShared;
 }
 
 interface AppHistory {
@@ -36,7 +36,7 @@ interface Memento {
 }
 
 interface SlideMemento {
-  images: SlideImage[];
+  images: Image[];
   text: string[];
 }
 
@@ -55,7 +55,7 @@ class ConcreteMemento implements Memento {
   }
 
   public getName(): string {
-    return `${this.date} / (${JSON.stringify(this.state).substr(0, 9)}...)`;
+    return `${this.date} / (${JSON.stringify(this.state).substr(0, 100)}...)`;
   }
 
   public getDate(): string {
@@ -63,17 +63,23 @@ class ConcreteMemento implements Memento {
   }
 }
 
-// this isn't quite right, should be more like Context
-class ImageFlyweight {
+// replace ImageFlyweight
+class Image {
   private sharedState: ImageShared;
+  private uniqueState: ImageUnique;
 
-  constructor(sharedState: ImageShared) {
+  constructor(sharedState: ImageShared, uniqueState: ImageUnique) {
     this.sharedState = sharedState;
+    this.uniqueState = uniqueState;
   }
 
-  public toHTML(uniqueState: ImageUnique): string {
-    const data = this.sharedState.data;
-    const { height, width, x, y } = uniqueState;
+  public setUniqueState(uniqueState: ImageUnique) {
+    this.uniqueState = uniqueState;
+  }
+
+  public toHTML(): string {
+    const { data } = this.sharedState;
+    const { height, width, x, y } = this.uniqueState;
     return `<img src=${data} height=${height} width=${width} left=${x} top=${y} />`;
   }
 }
@@ -84,7 +90,7 @@ class ImageFlyweightFactory {
 
   constructor(initialFlyweights: ImageShared[]) {
     Object.values(initialFlyweights).forEach((state) => {
-      this.flyweights[this.getKey(state)] = new ImageFlyweight(state);
+      this.flyweights[this.getKey(state)] = state;
     });
   }
 
@@ -92,14 +98,14 @@ class ImageFlyweightFactory {
     return state.name;
   }
 
-  public getFlyweight(sharedState: ImageShared): ImageFlyweight {
+  public getFlyweight(sharedState: ImageShared): ImageShared {
     const key = this.getKey(sharedState);
 
     if (key in this.flyweights) {
       // log('FlyweightFactory: Reusing existing flyweight.');
     } else {
       // log("FlyweightFactory: Can't find a flyweight, creating new one.");
-      this.flyweights[key] = new ImageFlyweight(sharedState);
+      this.flyweights[key] = sharedState;
     }
 
     return this.flyweights[key];
@@ -124,7 +130,7 @@ class Slide (Originator)
 */
 class Slide {
   imageFactory: ImageFlyweightFactory;
-  images: SlideImage[] = [];
+  images: Image[] = [];
   text: string[] = [];
 
   constructor(imageFactory: ImageFlyweightFactory) {
@@ -132,20 +138,25 @@ class Slide {
   }
 
   // -> user selects existing image. can duplicate and change coordinates
-  addImageToSlide(imageShared: ImageShared, imageUnique: ImageUnique) {
-    const { height, width, x, y } = imageUnique;
-    const image = this.imageFactory.getFlyweight(imageShared);
-    this.images.push({
-      raw: image, // this is what's stored in history, better make it good!
-      image,
-      html: image.toHTML({ height, width, x, y }),
-    });
+  addImage(imageShared: ImageShared, imageUnique: ImageUnique) {
+    // this is what's stored in history, better make it good!
+    this.images.push(new Image(imageShared, imageUnique));
   }
 
+  addText(text: string) {
+    this.text.push(text);
+  }
+
+  // print images and text blocks
   render() {
-    // print images and text blocks
-    log(JSON.stringify(this.images));
-    log(JSON.stringify(this.text));
+    log(
+      'images',
+      this.images.map((image) => image.toHTML())
+    );
+    log(
+      'text',
+      this.text.map((line) => `<div>${line}</div>`)
+    );
   }
 
   public save(): Memento {
@@ -218,14 +229,14 @@ export function main() {
     slide1: new History(slide1),
   };
 
-  slide1.save();
-  appHistory.slide1.showHistory();
-  slide1.addImageToSlide(butterflyImage, defaultUniqueProperties);
-  slide1.addImageToSlide(butterflyImage, {
+  slide1.addImage(butterflyImage, defaultUniqueProperties);
+  slide1.addImage(butterflyImage, {
     ...defaultUniqueProperties,
     x: 100,
   });
   slide1.render();
+  appHistory.slide1.backup();
+  appHistory.slide1.showHistory();
 }
 
 export const name = 'Flyweight Memento';
