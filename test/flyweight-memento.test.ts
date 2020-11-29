@@ -2,11 +2,9 @@ import { expect } from 'chai';
 
 import { assignLogStubToTestContext, getArgsForCall } from '../src/utils-test';
 import {
-  AppHistory,
-  History,
+  App,
   ImageFlyweightFactory,
   ImageShared,
-  Slide,
 } from '../src/combinations/flyweight-memento';
 
 // default images
@@ -54,12 +52,10 @@ describe('Flyweight-memento Combination', function () {
   assignLogStubToTestContext();
 
   beforeEach(function () {
-    const factory = createFactory();
-    this.slide = new Slide(factory);
-    const appHistory = {
-      slide1: new History(this.slide),
-    } as AppHistory;
-    this.history = appHistory.slide1;
+    const app = new App(createFactory());
+    app.addSlide();
+    this.slide = app.getCurrentSlide();
+    this.history = app.getCurrentHistory();
   });
 
   describe('Factory', function () {

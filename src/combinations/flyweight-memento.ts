@@ -12,9 +12,6 @@ export interface ImageUnique {
   y: number;
 }
 
-// what about ImageFlyweight?
-// interface Image extends ImageShared, ImageUnique {}
-
 export interface ImageBackupState {
   sharedState: ImageShared;
   uniqueState: ImageUnique;
@@ -24,11 +21,6 @@ export interface ImageFlyweights {
   [key: string]: ImageShared;
 }
 
-export interface AppHistory {
-  [key: string]: History;
-}
-
-// think through this more
 export interface Memento {
   getState(): object;
   getName(): string;
@@ -40,8 +32,7 @@ export interface SlideMemento {
   text: string[];
 }
 
-// should probably make an ImageMemento and a TextMemento
-// private
+// @private
 class ConcreteMemento implements Memento {
   private state: SlideMemento;
   private date: string;
@@ -73,7 +64,7 @@ class ConcreteMemento implements Memento {
   }
 }
 
-// private
+// @private
 class Image {
   private sharedState: ImageShared;
   private uniqueState: ImageUnique;
@@ -101,9 +92,7 @@ class Image {
   }
 }
 
-// public
 export class ImageFlyweightFactory {
-  // private flyweights: { [key: string]: Flyweight; } = <any>{};
   private flyweights: ImageFlyweights = {};
 
   constructor(initialFlyweights: ImageShared[]) {
@@ -135,14 +124,6 @@ export class ImageFlyweightFactory {
   }
 }
 
-/*
-class Slide (Originator)
-  getState() -> grab all extrinsicData values, combine with flyweights?
-      recombining/restoring - factory.getFlyweight(name)
-  save() -> return new ConcreteMemento(this.getState)
-  restore(memento: Memento): { this.state = memento.getState(); }
-*/
-// public
 export class Slide {
   private imageFactory: ImageFlyweightFactory;
   private images: Image[] = [];
@@ -153,9 +134,8 @@ export class Slide {
     this.imageFactory = imageFactory;
   }
 
-  // -> user selects existing image. can duplicate and change coordinates
+  // user selects existing image. can duplicate and change coordinates
   addImage(imageShared: ImageShared, imageUnique: ImageUnique) {
-    // this is what's stored in history, better make it good!
     this.images.push(new Image(imageShared, imageUnique));
   }
 
@@ -192,7 +172,6 @@ export class Slide {
 
 // class History (Caretaker) // handle stack of mementos
 // calls Slide’s backup related methods
-// public
 export class History {
   private mementos: Memento[] = [];
 
@@ -203,7 +182,6 @@ export class History {
   }
 
   public backup(): void {
-    // log('Backing up state...');
     const state = this.originator.save();
     this.mementos.push(state);
   }
@@ -223,6 +201,39 @@ export class History {
   }
 }
 
+/**
+ * @public
+ */
+export class App {
+  private slides: Slide[] = [];
+  private history: History[] = [];
+  private currentSlideIdx = -1;
+  private imageFactory: ImageFlyweightFactory;
+
+  constructor(imageFactory: ImageFlyweightFactory) {
+    this.imageFactory = imageFactory;
+  }
+
+  public addSlide() {
+    const slide = new Slide(this.imageFactory);
+    this.slides.push(slide);
+    this.history.push(new History(slide));
+    this.currentSlideIdx = this.slides.length - 1;
+  }
+
+  public getCurrentSlide() {
+    return this.slides[this.currentSlideIdx];
+  }
+
+  public getCurrentHistory() {
+    return this.history[this.currentSlideIdx];
+  }
+
+  // goToSlide(num)
+  // deleteSlide(num)
+  // etc...
+}
+
 export function main() {
   // default images
   const butterflyImage: ImageShared = { data: '101010', name: 'butterfly' };
@@ -234,7 +245,6 @@ export function main() {
     butterflyImage,
     flowerImage,
     sunImage,
-    // ...
   ]);
   factory.listFlyweights();
 
@@ -245,11 +255,10 @@ export function main() {
     y: 0,
   };
 
-  const slide1 = new Slide(factory);
-
-  const appHistory: AppHistory = {
-    slide1: new History(slide1),
-  };
+  const app = new App(factory);
+  app.addSlide();
+  const slide1 = app.getCurrentSlide();
+  const slide1History = app.getCurrentHistory();
 
   slide1.addImage(butterflyImage, defaultUniqueProperties);
   slide1.addImage(butterflyImage, {
@@ -257,16 +266,12 @@ export function main() {
     x: 100,
   });
   slide1.render();
-  appHistory.slide1.backup();
-  appHistory.slide1.showHistory();
+  slide1History.backup();
+  slide1History.showHistory();
   slide1.addText('Butterflies');
   slide1.render();
-  appHistory.slide1.backup();
-  appHistory.slide1.showHistory();
-  // slide1.render();
-  // slide1.addText('Butterflies');
-  appHistory.slide1.undo();
-  appHistory.slide1.showHistory();
+  slide1History.undo();
+  slide1History.showHistory();
   slide1.render();
 }
 
