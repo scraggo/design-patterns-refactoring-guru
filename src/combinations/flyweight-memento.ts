@@ -62,7 +62,7 @@ class ConcreteMemento implements Memento {
         (image) =>
           `${image.sharedState.name} - ${JSON.stringify(image.uniqueState)}`
       )
-      .join(', ');
+      .join('\n    ');
     return `${this.date} / text: ${text.join(
       ', '
     )} / images: ${imagesAsString}`;
@@ -209,15 +209,12 @@ export class History {
   }
 
   public undo(): void {
-    log('Attempting undo...');
     if (this.mementos.length === 0) {
-      log('Nothing to undo.');
       return;
     }
 
     const memento = this.mementos.pop() as Memento;
     this.originator.restore(memento);
-    log('Undo complete.', memento);
   }
 
   public showHistory(): void {

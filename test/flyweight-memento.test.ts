@@ -23,55 +23,35 @@ const defaultUniqueProperties = {
 
 const createFactory = () => {
   // add default images
-  return new ImageFlyweightFactory([
-    butterflyImage,
-    flowerImage,
-    sunImage,
-    // ...
-  ]);
+  return new ImageFlyweightFactory([butterflyImage, flowerImage, sunImage]);
 };
-
-export function main() {
-  const factory = createFactory();
-
-  const slide1 = new Slide(factory);
-
-  const appHistory: AppHistory = {
-    slide1: new History(slide1),
-  };
-
-  slide1.addImage(butterflyImage, defaultUniqueProperties);
-  slide1.addImage(butterflyImage, {
-    ...defaultUniqueProperties,
-    x: 100,
-  });
-  slide1.render();
-  appHistory.slide1.backup();
-  appHistory.slide1.showHistory();
-  slide1.addText('Butterflies');
-  slide1.render();
-  appHistory.slide1.backup();
-  appHistory.slide1.showHistory();
-  // slide1.render();
-  // slide1.addText('Butterflies');
-  appHistory.slide1.undo();
-  appHistory.slide1.showHistory();
-  slide1.render();
-}
 
 const checkSlideRender = (
   logStub: sinon.SinonStub,
-  title: string,
-  text: string,
-  images: string
+  title?: string,
+  text?: string,
+  images?: string
 ) => {
-  expect(getArgsForCall(logStub, 1)[0]).to.equal(title);
-  expect(getArgsForCall(logStub, 2)[0]).to.equal(text);
-  expect(getArgsForCall(logStub, 3)[0]).to.equal(images);
+  expect(getArgsForCall(logStub, 1)[0]).to.equal(title || '');
+  expect(getArgsForCall(logStub, 2)[0]).to.equal(text || '');
+  expect(getArgsForCall(logStub, 3)[0]).to.equal(images || '');
 };
 
-describe.only('Flyweight-memento Combination', function () {
-  // assignLogStubToTestContext();
+const checkHistoryRender = (
+  logStub: sinon.SinonStub,
+  numActions: number,
+  ...texts: string[]
+) => {
+  const title = getArgsForCall(logStub, 0)[0];
+  const args1 = getArgsForCall(logStub, 1)[0];
+  expect(title).to.equal(`History: ${numActions} actions`);
+  texts.forEach((text) => {
+    expect(args1).to.include(text);
+  });
+};
+
+describe('Flyweight-memento Combination', function () {
+  assignLogStubToTestContext();
 
   beforeEach(function () {
     const factory = createFactory();
@@ -83,7 +63,6 @@ describe.only('Flyweight-memento Combination', function () {
   });
 
   describe('Factory', function () {
-    assignLogStubToTestContext();
     it('listFlyweights() logs available flyweights', function () {
       const factory = createFactory();
       factory.listFlyweights();
@@ -95,10 +74,9 @@ describe.only('Flyweight-memento Combination', function () {
   });
 
   describe('Slide', function () {
-    assignLogStubToTestContext();
     it('renders an initially empty slide', function () {
       this.slide.render();
-      checkSlideRender(this.logStub, '<h1>Slide 1</h1>', '', '');
+      checkSlideRender(this.logStub, '<h1>Slide 1</h1>');
     });
 
     it('renders a slide with text and 2 images', function () {
@@ -119,10 +97,9 @@ describe.only('Flyweight-memento Combination', function () {
   });
 
   describe('App', function () {
-    assignLogStubToTestContext();
     it('initially shows an empty history', function () {
       this.history.showHistory();
-      expect(this.logStub).to.not.been.called;
+      checkHistoryRender(this.logStub, 0);
     });
 
     it('shows populated history', function () {
@@ -131,24 +108,37 @@ describe.only('Flyweight-memento Combination', function () {
       this.history.backup();
       this.history.showHistory();
 
-      const calls = getArgsForCall(this.logStub, 0);
-      expect(calls).to.have.length(1);
-      expect(calls[0]).to.include('text: hi, hello');
+      checkHistoryRender(this.logStub, 1, 'text: hi, hello');
     });
 
-    it.only('adds to populated history', function () {
+    it('adds to populated history', function () {
       this.slide.addText('hi');
       this.history.backup();
       this.slide.addImage(butterflyImage, defaultUniqueProperties);
       this.history.backup();
       this.history.showHistory();
-      const args0 = getArgsForCall(this.logStub, 0);
-      const args1 = getArgsForCall(this.logStub, 1);
-      expect(args0[0]).to.equal('History: 2 actions');
-      expect(args1[0]).to.include('text: hi');
-      expect(args1[0]).to.include(
+
+      checkHistoryRender(
+        this.logStub,
+        2,
+        'text: hi',
         'images: butterfly - {"height":100,"width":100,"x":0,"y":0}'
       );
+    });
+
+    it('performs undo correctly', function () {
+      this.slide.addText('hi');
+      this.history.backup(); // save this state
+      expect(this.slide.images).to.have.length(0);
+
+      this.slide.addImage(butterflyImage, defaultUniqueProperties);
+      expect(this.slide.images).to.have.length(1);
+
+      this.history.undo();
+      this.history.showHistory();
+
+      checkHistoryRender(this.logStub, 0);
+      expect(this.slide.images).to.have.length(0);
     });
   });
 });
