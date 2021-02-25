@@ -1,16 +1,43 @@
+/*
+ * The Product interface declares the operations that all concrete products must
+ * implement.
+ */
+interface Product {
+  operation(): string;
+}
+
+/*
+ * Concrete Products provide various implementations of the Product interface.
+ */
+export class ConcreteProduct1 implements Product {
+  static resultString = '{Result of the ConcreteProduct1}';
+  public operation(): string {
+    return ConcreteProduct1.resultString;
+  }
+}
+
+export class ConcreteProduct2 implements Product {
+  static resultString = '{Result of the ConcreteProduct2}';
+  public operation(): string {
+    return ConcreteProduct2.resultString;
+  }
+}
+
 /**
  * The Creator class declares the factory method that is supposed to return an
  * object of a Product class. The Creator's subclasses usually provide the
  * implementation of this method.
  */
-abstract class Creator {
+export abstract class Creator {
+  static creatorMessage = "Creator: The same creator's code has just worked with";
+
   /**
    * Note that the Creator may also provide some default implementation of the
    * factory method.
    */
   public abstract factoryMethod(): Product;
 
-  /**
+  /*
    * Also note that, despite its name, the Creator's primary responsibility is
    * not creating products. Usually, it contains some core business logic that
    * relies on Product objects, returned by the factory method. Subclasses can
@@ -21,7 +48,7 @@ abstract class Creator {
     // Call the factory method to create a Product object.
     const product = this.factoryMethod();
     // Now, use the product.
-    return `Creator: The same creator's code has just worked with ${product.operation()}`;
+    return `${Creator.creatorMessage} ${product.operation()}`;
   }
 }
 
@@ -35,6 +62,7 @@ class ConcreteCreator1 extends Creator {
    * type, even though the concrete product is actually returned from the
    * method. This way the Creator can stay independent of concrete product
    * classes.
+   * @returns {Product} ConcreteProduct1
    */
   public factoryMethod(): Product {
     return new ConcreteProduct1();
@@ -47,48 +75,26 @@ class ConcreteCreator2 extends Creator {
   }
 }
 
-/**
- * The Product interface declares the operations that all concrete products must
- * implement.
- */
-interface Product {
-  operation(): string;
-}
-
-/**
- * Concrete Products provide various implementations of the Product interface.
- */
-class ConcreteProduct1 implements Product {
-  public operation(): string {
-    return '{Result of the ConcreteProduct1}';
-  }
-}
-
-class ConcreteProduct2 implements Product {
-  public operation(): string {
-    return '{Result of the ConcreteProduct2}';
-  }
-}
-
-/**
+/*
  * The client code works with an instance of a concrete creator, albeit through
  * its base interface. As long as the client keeps working with the creator via
  * the base interface, you can pass it any creator's subclass.
+ * Returns result of `creator.someOperation()`
  */
-function clientCode(creator: Creator) {
-  // ...
-  console.log('Client: I\'m not aware of the creator\'s class, but it still works.');
-  console.log(creator.someOperation());
-  // ...
+// function clientCode(keyToGetCreator: creatorKey): string {
+function getProduct(creator: Creator): string {
+  return creator.someOperation();
 }
 
-/**
- * The Application picks a creator's type depending on the configuration or
- * environment.
- */
-console.log('App: Launched with the ConcreteCreator1.');
-clientCode(new ConcreteCreator1());
-console.log('');
+// route handler: GET request to products/:id
+export function getProductById(id: any) {
+  if (id === 'a') {
+    return getProduct(new ConcreteCreator1());
+  }
 
-console.log('App: Launched with the ConcreteCreator2.');
-clientCode(new ConcreteCreator2());
+  if (id === 'b') {
+    return getProduct(new ConcreteCreator2());
+  }
+
+  throw new Error('Status: 403. Product not found.');
+}

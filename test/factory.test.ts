@@ -1,18 +1,24 @@
 import { expect } from 'chai';
 
-// import { assignLogStubToTestContext, getArgsForCall } from '../src/utils-test';
-import { ConcreteCreator1 } from '../src/creational/factory';
+import { ConcreteProduct1, ConcreteProduct2, Creator, getProductById } from '../src/creational/factory';
 
 describe('Factory Method Pattern', function () {
-  // assignLogStubToTestContext();
+  describe('getProductById', function () {
+    it('gets result of id=a', function () {
+      const result = getProductById('a');
+      expect(result).to.include(Creator.creatorMessage);
+      expect(result).to.include(ConcreteProduct1.resultString);
+    });
 
-  // beforeEach(function () {
-  //   this.? = new ?();
-  // });
+    it('gets result of id=b', function () {
+      const result = getProductById('b');
+      expect(result).to.include(Creator.creatorMessage);
+      expect(result).to.include(ConcreteProduct2.resultString);
+    });
 
-  describe('main', function () {
-    it('...', function () {
-      expect('hi').to.equal('hello');
+    it('throws if id not found', function () {
+      const badFunc = () => getProductById('c');
+      expect(badFunc).to.throw();
     });
   });
 });
