@@ -81,9 +81,12 @@ class ConcreteCreator2 extends Creator {
  * the base interface, you can pass it any creator's subclass.
  * Returns result of `creator.someOperation()`
  */
-// function clientCode(keyToGetCreator: creatorKey): string {
 function getProduct(creator: Creator): string {
   return creator.someOperation();
+}
+
+function throw403Error() {
+  throw new Error('Status: 403. Product not found.');
 }
 
 // route handler: GET request to products/:id
@@ -96,5 +99,21 @@ export function getProductById(id: any) {
     return getProduct(new ConcreteCreator2());
   }
 
-  throw new Error('Status: 403. Product not found.');
+  throw403Error();
 }
+
+/* eslint-disable */
+function getProductByIdWithoutFactory(id: any) {
+  if (id === 'a') {
+    const product = new ConcreteProduct1();
+    return `Just created a ${product.operation()}`;
+  }
+
+  if (id === 'b') {
+    const product = new ConcreteProduct2();
+    return `Just created a ${product.operation()}`;
+  }
+
+  throw403Error();
+}
+/* eslint-enable */
