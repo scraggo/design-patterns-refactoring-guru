@@ -117,3 +117,8 @@ function getProductByIdWithoutFactory(id: any) {
   throw403Error();
 }
 /* eslint-enable */
+
+export const name = 'Factory';
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const main = function () { };
+
